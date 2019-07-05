@@ -5,12 +5,16 @@ TREE__MODULE_NAME := tree
 # Each implementation file ('.cc' file) in this module depends on the interface
 # which each header provides. Source files are recompiled if any one of these 
 # headers is altered.
-TREE__INCLUDE :=
+TREE__INCLUDE := \
+	node.hh \
+	nodes/parent_node.hh
 TREE__INCLUDE := $(patsubst %,$(INCLUDE)/$(TREE__MODULE_NAME)/%,$(TREE__INCLUDE))
 
 # C++ source files of 'tree' module.
 # They are prepended their module's relative path to the main Makefile.
-TREE__SRC :=
+TREE__SRC := \
+	node.cc \
+	nodes/parent_node.cc
 TREE__SRC := $(patsubst %,$(SRC)/$(TREE__MODULE_NAME)/%,$(TREE__SRC))
 
 # Object files of 'tree' helper module.
