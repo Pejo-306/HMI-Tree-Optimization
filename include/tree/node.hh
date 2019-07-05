@@ -13,7 +13,7 @@ namespace hmi_tree_optimization {
 
         class Node {
         public:
-            explicit Node(nid_t ) noexcept;
+            explicit Node(nid_t) noexcept;
             explicit Node(nid_t, const std::unordered_set<const ParentNode *>&) noexcept;
             virtual ~Node() noexcept;
             Node& add_parent(const ParentNode *);
@@ -21,14 +21,16 @@ namespace hmi_tree_optimization {
             nid_t get_id() const noexcept;
             const std::unordered_set<const ParentNode *>& get_parents() const noexcept;
             int get_dirty_counter() const noexcept;
-            friend std::ostream& operator<<(std::ostream&, const Node&);
+            virtual std::string to_string() const noexcept;
         protected:
-            virtual std::string get_typename() const noexcept;
+            virtual std::string get_typename() const noexcept = 0;
         private:
             nid_t id_;
             std::unordered_set<const ParentNode *> parents_;
             int dirty_counter_;
         };  // class Node
+
+        std::ostream& operator<<(std::ostream&, const Node&);
     }  // namespace tree
 }  // namespace hmi_tree_optimization
 

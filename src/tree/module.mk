@@ -7,14 +7,16 @@ TREE__MODULE_NAME := tree
 # headers is altered.
 TREE__INCLUDE := \
 	node.hh \
-	nodes/parent_node.hh
+	nodes/parent_node.hh \
+	nodes/leaf_node.hh
 TREE__INCLUDE := $(patsubst %,$(INCLUDE)/$(TREE__MODULE_NAME)/%,$(TREE__INCLUDE))
 
 # C++ source files of 'tree' module.
 # They are prepended their module's relative path to the main Makefile.
 TREE__SRC := \
 	node.cc \
-	nodes/parent_node.cc
+	nodes/parent_node.cc \
+	nodes/leaf_node.cc
 TREE__SRC := $(patsubst %,$(SRC)/$(TREE__MODULE_NAME)/%,$(TREE__SRC))
 
 # Object files of 'tree' helper module.

@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <unordered_set>
+#include <string>
+#include <sstream>
 
 namespace hmi_tree_optimization {
     namespace tree {
@@ -40,15 +42,22 @@ namespace hmi_tree_optimization {
             return dirty_counter_;
         }
 
+        std::string Node::to_string() const noexcept {
+            std::ostringstream result;
+            
+            result << get_typename() << "{" 
+                << "id=" << id_
+                << ", dc=" << dirty_counter_
+                << "}";
+            return result.str();
+        }
+
         std::string Node::get_typename() const noexcept {
             return "Node";
         }
 
         std::ostream& operator<<(std::ostream& out, const Node& node) {
-            out << node.get_typename() << "{" 
-                << "id=" << node.get_id()
-                << ", dc=" << node.get_dirty_counter()
-                << "}";
+            out << node.to_string();
             return out;
         }
     }  // namespace tree
