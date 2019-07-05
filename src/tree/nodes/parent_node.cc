@@ -15,7 +15,8 @@ namespace hmi_tree_optimization {
 
         ParentNode& ParentNode::add_child(Node *child_node) {
             children_.insert(child_node);
-            child_node->add_parent(this);
+            if (!child_node->has_parent(this))
+                child_node->add_parent(this);
             return *this;
         }
 
@@ -25,6 +26,14 @@ namespace hmi_tree_optimization {
 
         const std::unordered_set<Node *>& ParentNode::get_children() const noexcept {
             return children_;
+        }
+
+        bool ParentNode::has_child(const Node *child_node) const noexcept {
+            return children_.find(const_cast<Node *>(child_node)) != children_.end();
+        }
+
+        bool ParentNode::has_child(const Node& child_node) const noexcept {
+            return has_child(&child_node);
         }
 
         std::string ParentNode::get_typename() const noexcept {

@@ -5,6 +5,8 @@
 #include <string>
 #include <sstream>
 
+#include "tree/nodes/parent_node.hh"
+
 namespace hmi_tree_optimization {
     namespace tree {
         Node::Node(nid_t id) noexcept 
@@ -21,12 +23,14 @@ namespace hmi_tree_optimization {
         Node::~Node() noexcept {
         }
 
-        Node& Node::add_parent(const ParentNode *parent_node) {
+        Node& Node::add_parent(ParentNode *parent_node) {
             parents_.insert(parent_node);
+            if (!parent_node->has_child(this))
+                parent_node->add_child(this);
             return *this;
         }
 
-        Node& Node::add_parent(const ParentNode& parent_node) {
+        Node& Node::add_parent(ParentNode& parent_node) {
             return add_parent(&parent_node);
         }
 
@@ -40,6 +44,14 @@ namespace hmi_tree_optimization {
 
         int Node::get_dirty_counter() const noexcept {
             return dirty_counter_;
+        }
+
+        bool Node::has_parent(const ParentNode *parent_node) const noexcept {
+            return parents_.find(parent_node) != parents_.end();
+        }
+
+        bool Node::has_parent(const ParentNode& parent_node) const noexcept {
+            return has_parent(&parent_node);
         }
 
         std::string Node::to_string() const noexcept {

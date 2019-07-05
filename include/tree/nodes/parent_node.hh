@@ -14,6 +14,8 @@ namespace hmi_tree_optimization {
             ParentNode& add_child(Node *);
             ParentNode& add_child(Node&);
             const std::unordered_set<Node *>& get_children() const noexcept;
+            bool has_child(const Node *) const noexcept;
+            bool has_child(const Node&) const noexcept;
         private:
             std::unordered_set<Node *> children_;
             virtual std::string get_typename() const noexcept final;
