@@ -10,7 +10,8 @@ namespace hmi_tree_optimization {
         class HMIView final: public IParentNode {
         public:
             explicit HMIView(nid_t) noexcept;
-            virtual std::string to_string() const noexcept final;
+            virtual std::string to_string() const final;
+            virtual std::string repr() const final;
         };  // class HMIView
     }  // namespace tree
 }  // namespace hmi_tree_optimization

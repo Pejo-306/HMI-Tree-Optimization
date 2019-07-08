@@ -13,7 +13,17 @@ namespace hmi_tree_optimization {
               IParentNode(id) {
         }
 
-        std::string HMIView::to_string() const noexcept {
+        std::string HMIView::to_string() const {
+            std::ostringstream res;
+
+            res << "{V|" 
+                << get_id() 
+                << "|ch:" << get_children().size() 
+                << '}';
+            return res.str();
+        }
+
+        std::string HMIView::repr() const {
             std::ostringstream res;
 
             res << "HMIView{"

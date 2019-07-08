@@ -10,8 +10,13 @@ namespace hmi_tree_optimization {
     namespace tree {
         class HMIText final: public IDirtyNode, public IChildNode {
         public:
-            explicit HMIText(nid_t) noexcept;
-            virtual std::string to_string() const noexcept final;
+            explicit HMIText(nid_t, const std::string&) noexcept;
+            virtual std::string to_string() const final;
+            virtual std::string repr() const final;
+            const std::string& get_content() const noexcept;
+            HMIText& set_content(const std::string&) noexcept;
+        private:
+            std::string content_;
         };  // class HMIText
     }  // namespace tree
 }  // namespace hmi_tree_optimization

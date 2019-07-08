@@ -13,7 +13,8 @@ namespace hmi_tree_optimization {
             explicit Node(nid_t) noexcept;
             virtual ~Node() noexcept;
             nid_t get_id() const noexcept;
-            virtual std::string to_string() const noexcept = 0;
+            virtual std::string to_string() const = 0;
+            virtual std::string repr() const = 0;
         private:
             nid_t id_;
         };  // class Node

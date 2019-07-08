@@ -17,7 +17,18 @@ namespace hmi_tree_optimization {
               IChildNode(id) {
         }
 
-        std::string HMIWidget::to_string() const noexcept {
+        std::string HMIWidget::to_string() const {
+            std::ostringstream res;
+
+            res << "{W|" 
+                << get_id() 
+                << "|par:" << get_parents().size()
+                << "|ch:" << get_children().size()
+                << '}';
+            return res.str();
+        }
+
+        std::string HMIWidget::repr() const {
             std::ostringstream res;
 
             res << "HMIWidget{"
