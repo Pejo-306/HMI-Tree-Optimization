@@ -11,8 +11,8 @@ namespace hmi_tree_optimization {
         class HMIText final: public IDirtyNode, public IChildNode {
         public:
             explicit HMIText(nid_t, const std::string&) noexcept;
-            virtual std::string to_string() const final;
-            virtual std::string repr() const final;
+            std::string to_string() const final;
+            std::string repr() const final;
             const std::string& get_content() const noexcept;
             HMIText& set_content(const std::string&) noexcept;
         private:

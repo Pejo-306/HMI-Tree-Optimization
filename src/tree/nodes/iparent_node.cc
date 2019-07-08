@@ -9,10 +9,14 @@ namespace hmi_tree_optimization {
             : Node(id) {
         }
 
-        IParentNode::IParentNode(nid_t id, 
-                const std::unordered_set<IChildNode *>& children) noexcept
-            : Node(id),
-              children_(children) {
+        IParentNode::~IParentNode() noexcept {
+            const std::unordered_set<IChildNode *> children_copy(children_);
+
+            for (auto& ch : children_copy) {
+                remove_child(ch);
+                if (ch->get_parents().size() == 0)
+                    delete ch;
+            }
         }
 
         IParentNode& IParentNode::add_child(IChildNode *child_node) {
@@ -24,6 +28,17 @@ namespace hmi_tree_optimization {
 
         IParentNode& IParentNode::add_child(IChildNode& child_node) {
             return add_child(&child_node);
+        }
+
+        IParentNode& IParentNode::remove_child(IChildNode *child_node) {
+            children_.erase(child_node);
+            if (child_node->has_parent(this))
+                child_node->remove_parent(this);
+            return *this;
+        }
+
+        IParentNode& IParentNode::remove_child(IChildNode& child_node) {
+            return remove_child(&child_node);
         }
 
         const std::unordered_set<IChildNode *>& IParentNode::get_children() const noexcept {

@@ -12,9 +12,11 @@ namespace hmi_tree_optimization {
         class IParentNode: public virtual Node {
         public:
             explicit IParentNode(nid_t) noexcept;
-            explicit IParentNode(nid_t, const std::unordered_set<IChildNode *>&) noexcept;
+            virtual ~IParentNode() noexcept;
             IParentNode& add_child(IChildNode *);
             IParentNode& add_child(IChildNode&);
+            IParentNode& remove_child(IChildNode *);
+            IParentNode& remove_child(IChildNode&);
             const std::unordered_set<IChildNode *>& get_children() const noexcept;
             bool has_child(const IChildNode *) const noexcept;
             bool has_child(const IChildNode&) const noexcept;

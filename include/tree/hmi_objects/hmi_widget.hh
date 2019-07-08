@@ -13,8 +13,8 @@ namespace hmi_tree_optimization {
         class HMIWidget final: public IDirtyNode, public IParentNode, public IChildNode {
         public:
             explicit HMIWidget(nid_t) noexcept;
-            virtual std::string to_string() const final;
-            virtual std::string repr() const final;
+            std::string to_string() const final;
+            std::string repr() const final;
         };  // class HMIWidget
     }  // namespace tree
 }  // namespace hmi_tree_optimization
