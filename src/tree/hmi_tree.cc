@@ -8,14 +8,30 @@ namespace hmi_tree_optimization {
         using dfs_iterator = HMITree::dfs_iterator;
         using bfs_iterator = HMITree::bfs_iterator;
 
-        Node& dfs_iterator::operator*() const {
+        Node& HMITree::base_iterator::operator*() const {
             if (element_ == nullptr)
                 throw HMIException(element_);
             return *element_;
         }
 
-        Node *dfs_iterator::operator->() const {
+        Node *HMITree::base_iterator::operator->() const {
             return element_;
+        }
+
+        bool HMITree::base_iterator::operator==(const base_iterator& other) const {
+            return element_ == other.element_;
+        }
+
+        bool HMITree::base_iterator::operator!=(const base_iterator& other) const {
+            return !operator==(other);
+        }
+
+        HMITree::base_iterator::~base_iterator() noexcept {
+        }
+
+        HMITree::base_iterator::base_iterator(HMITree& owner, Node *element) noexcept
+            : owner_(owner),
+              element_(element) {
         }
 
         dfs_iterator& dfs_iterator::operator++() {
@@ -31,18 +47,9 @@ namespace hmi_tree_optimization {
             return res;
         }
 
-        bool dfs_iterator::operator==(const dfs_iterator& other) const {
-            return element_ == other.element_;
-        }
-
-        bool dfs_iterator::operator!=(const dfs_iterator& other) const {
-            return !operator==(other);
-        }
-
         dfs_iterator::dfs_iterator(HMITree& owner, Node *element, 
                 bool shove_children) noexcept
-            : owner_(owner),
-              element_(element) {
+            : base_iterator(owner, element) {
             if (shove_children)
                 shove_children_to_stack();
         }
@@ -67,16 +74,6 @@ namespace hmi_tree_optimization {
             return res;
         }
 
-        Node& bfs_iterator::operator*() const {
-            if (element_ == nullptr)
-                throw HMIException(element_);
-            return *element_;
-        }
-
-        Node *bfs_iterator::operator->() const {
-            return element_;
-        }
-
         bfs_iterator& bfs_iterator::operator++() {
             element_ = get_front_node();
             shove_children_to_queue();
@@ -90,18 +87,9 @@ namespace hmi_tree_optimization {
             return res;
         }
 
-        bool bfs_iterator::operator==(const bfs_iterator& other) const {
-            return element_ == other.element_;
-        }
-
-        bool bfs_iterator::operator!=(const bfs_iterator& other) const {
-            return !operator==(other);
-        }
-
         bfs_iterator::bfs_iterator(HMITree& owner, Node *element, 
                 bool shove_children) noexcept
-            : owner_(owner),
-              element_(element) {
+            : base_iterator(owner, element) {
             if (shove_children)
                 shove_children_to_queue();
         }
@@ -154,7 +142,10 @@ namespace hmi_tree_optimization {
                     return *it;
                 }
             }
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wterminate"
             throw HMIException(nullptr);
+#pragma GCC diagnostic pop
         }
 
         HMIView& HMITree::get_root() noexcept {

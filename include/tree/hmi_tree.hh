@@ -11,38 +11,44 @@
 namespace hmi_tree_optimization {
     namespace tree {
         class HMITree final {
-        public:
-            class dfs_iterator {
+            class base_iterator {
                 friend class HMITree;
 
             public:
                 Node& operator*() const;
                 Node *operator->() const;
-                dfs_iterator& operator++();
-                dfs_iterator operator++(int);
-                bool operator==(const dfs_iterator&) const;
-                bool operator!=(const dfs_iterator&) const;
+                bool operator==(const base_iterator&) const;
+                bool operator!=(const base_iterator&) const;
+            protected:
+                ~base_iterator() noexcept;
             private:
                 HMITree& owner_;
                 Node *element_;
+                base_iterator(HMITree&, Node *) noexcept;
+            };  // class HMITree::base_iterator
+
+        public:
+            class dfs_iterator: public base_iterator {
+                friend class base_iterator;
+                friend class HMITree;
+
+            public:
+                dfs_iterator& operator++();
+                dfs_iterator operator++(int);
+            private:
                 dfs_iterator(HMITree&, Node *, bool = true) noexcept;
                 void shove_children_to_stack();
                 Node *get_top_node();
             };  // class HMITree::dfs_iterator
 
-            class bfs_iterator {
+            class bfs_iterator: public base_iterator {
+                friend class base_iterator;
                 friend class HMITree;
 
             public:
-                Node& operator*() const;
-                Node *operator->() const;
                 bfs_iterator& operator++();
                 bfs_iterator operator++(int);
-                bool operator==(const bfs_iterator&) const;
-                bool operator!=(const bfs_iterator&) const;
             private:
-                HMITree& owner_;
-                Node *element_;
                 bfs_iterator(HMITree&, Node *, bool = true) noexcept;
                 void shove_children_to_queue();
                 Node *get_front_node();
