@@ -3,11 +3,11 @@
 
 #include <string>
 
-#include "tree/nodes/iparent_node.hh"
+#include "tree/node.hh"
 
 namespace hmi_tree_optimization {
     namespace tree {
-        class HMIView final: public IParentNode {
+        class HMIView final: public Node {
         public:
             explicit HMIView(nid_t) noexcept;
             std::string to_string() const final;

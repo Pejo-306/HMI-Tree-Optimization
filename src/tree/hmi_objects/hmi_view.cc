@@ -3,14 +3,12 @@
 #include <string>
 #include <sstream>
 
-#include "tree/nodes/node.hh"
-#include "tree/nodes/iparent_node.hh"
+#include "tree/node.hh"
 
 namespace hmi_tree_optimization {
     namespace tree {
         HMIView::HMIView(nid_t id) noexcept
-            : Node(id),
-              IParentNode(id) {
+            : Node(id) {
         }
 
         std::string HMIView::to_string() const {

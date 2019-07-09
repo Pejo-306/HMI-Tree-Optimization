@@ -7,10 +7,8 @@ TREE__MODULE_NAME := tree
 # headers is altered.
 TREE__INCLUDE := \
 	hmi_tree.hh \
-	nodes/node.hh \
-	nodes/idirty_node.hh \
-	nodes/iparent_node.hh \
-	nodes/ichild_node.hh \
+	node.hh \
+	hmi_exception.hh \
 	hmi_objects/hmi_view.hh \
 	hmi_objects/hmi_widget.hh \
 	hmi_objects/hmi_text.hh
@@ -20,10 +18,8 @@ TREE__INCLUDE := $(patsubst %,$(INCLUDE)/$(TREE__MODULE_NAME)/%,$(TREE__INCLUDE)
 # They are prepended their module's relative path to the main Makefile.
 TREE__SRC := \
 	hmi_tree.cc \
-	nodes/node.cc \
-	nodes/idirty_node.cc \
-	nodes/iparent_node.cc \
-	nodes/ichild_node.cc \
+	node.cc \
+	hmi_exception.cc \
 	hmi_objects/hmi_view.cc \
 	hmi_objects/hmi_widget.cc \
 	hmi_objects/hmi_text.cc

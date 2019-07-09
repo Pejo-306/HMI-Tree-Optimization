@@ -3,16 +3,12 @@
 #include <string>
 #include <sstream>
 
-#include "tree/nodes/node.hh"
-#include "tree/nodes/idirty_node.hh"
-#include "tree/nodes/ichild_node.hh"
+#include "tree/node.hh"
 
 namespace hmi_tree_optimization {
     namespace tree {
         HMIText::HMIText(nid_t id, const std::string& content) noexcept
             : Node(id),
-              IDirtyNode(id),
-              IChildNode(id),
               content_(content) {
         }
 

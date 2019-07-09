@@ -4,13 +4,11 @@
 #include <unordered_set>
 #include <string>
 
-#include "tree/nodes/idirty_node.hh"
-#include "tree/nodes/iparent_node.hh"
-#include "tree/nodes/ichild_node.hh"
+#include "tree/node.hh"
 
 namespace hmi_tree_optimization {
     namespace tree {
-        class HMIWidget final: public IDirtyNode, public IParentNode, public IChildNode {
+        class HMIWidget final: public Node {
         public:
             explicit HMIWidget(nid_t) noexcept;
             std::string to_string() const final;
