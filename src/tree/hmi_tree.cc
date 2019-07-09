@@ -1,5 +1,8 @@
 #include "tree/hmi_tree.hh"
 
+#include <cstdlib>
+#include <limits>
+
 #include "tree/node.hh"
 #include "tree/hmi_exception.hh"
 
@@ -144,7 +147,7 @@ namespace hmi_tree_optimization {
             }
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wterminate"
-            throw HMIException(nullptr);
+            throw HMIException(nullptr);  // node has not been found
 #pragma GCC diagnostic pop
         }
 
@@ -156,8 +159,15 @@ namespace hmi_tree_optimization {
             return root_;
         }
 
-        nid_t HMITree::lease_free_nid() const noexcept {
-            return 42;
+        // NOTE: a random seed should be initialized before invoking this function.
+        nid_t HMITree::lease_free_nid() noexcept {
+            nid_t res;
+
+            do
+                res = rand() % std::numeric_limits<nid_t>::max() + 1;
+            while (id_pool_.find(res) != id_pool_.end());
+            id_pool_.insert(res);
+            return res;
         }
 
         dfs_iterator HMITree::dfs_begin() {
