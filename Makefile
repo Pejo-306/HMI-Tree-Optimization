@@ -55,7 +55,7 @@ CXXFLAGS := -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic --std=c++14 -I $
 
 # The project's helper modules.
 # They should be essential for every executable module.
-HELPER_MODULES := tree
+HELPER_MODULES := tree std_helper
 
 # Executable modules - specific representations of the same project.
 # They have the following characteristics:
