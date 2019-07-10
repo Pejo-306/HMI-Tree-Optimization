@@ -8,12 +8,14 @@ SOLUTION__EXECUTABLE := solution
 # Each implementation file ('.cc' file) in this module depends on the interface
 # which each header provides. Source files are recompiled if any one of these 
 # headers is altered.
-SOLUTION__INCLUDE :=
+SOLUTION__INCLUDE := \
+	caching.hh
 SOLUTION__INCLUDE := $(patsubst %,$(INCLUDE)/$(SOLUTION__MODULE_NAME)/%,$(SOLUTION__INCLUDE))
 
 # C++ source files of 'solution' executable module.
 # NOTE: do not include source file with 'main' function definition (see below).
-SOLUTION__SRC :=
+SOLUTION__SRC := \
+	caching.cc
 SOLUTION__SRC := $(patsubst %,$(SRC)/$(SOLUTION__MODULE_NAME)/%,$(SOLUTION__SRC))
 # C++ source file with 'main' function definition.
 SOLUTION__MAIN_SRC := main.cc

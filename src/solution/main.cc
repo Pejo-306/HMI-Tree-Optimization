@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "solution/caching.hh"
 #include "std_helper/split.hh"
 #include "tree/hmi_tree.hh"
 #include "tree/hmi_objects/hmi_view.hh"
@@ -12,7 +13,7 @@
 #include "tree/hmi_exception.hh"
 
 using namespace hmi_tree_optimization;
-
+using namespace hmi_tree_optimization::solution;
 using namespace hmi_tree_optimization::tree;
 
 namespace {
@@ -24,17 +25,34 @@ int main() {
 
     HMITree tree;
     size_t nnodes;
-    std::string node_line;
+    std::string line;
+    nid_t node_id;
+    std::vector<std::string> items;
 
     std::cin >> nnodes;
-    std::getline(std::cin, node_line);  // skip newline char
+    std::getline(std::cin, line);  // skip newline char
     for (size_t i = 0; i < nnodes; ++i) {
-        std::getline(std::cin, node_line);
-        add_node_from_csv(node_line, tree);
+        std::getline(std::cin, line);
+        add_node_from_csv(line, tree);
+    }
+
+    while (!std::getline(std::cin, line).eof() &&
+            line.compare("end") != 0) {
+        if (line.compare("print") == 0) {  // print the current state of the tree
+            std::cout << tree << std::endl;
+        } else if (line.compare("refresh") == 0) {
+            evaluate_tree_dirtiness(tree);
+            refresh_screen(tree);
+        } else {
+            items = std_helper::split(line, ',');
+            node_id = std::stoul(items[0]);
+            items.erase(items.begin());
+            tree.get_node(node_id).update(items);
+        }
     }
 
     for (HMITree::bfs_iterator it = tree.bfs_begin(); it != tree.bfs_end(); ++it)
-        std::cout << it->repr() << std::endl;
+        std::cout << it->is_very_dirty() << it->repr() << std::endl;
     return 0;
 }
 
