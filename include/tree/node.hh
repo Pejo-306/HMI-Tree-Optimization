@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_set>
+#include <vector>
 
 namespace hmi_tree_optimization {
     namespace tree {
@@ -31,6 +32,11 @@ namespace hmi_tree_optimization {
             bool has_parent(const Node *) const noexcept;
             bool has_parent(const Node&) const noexcept;
             int get_dirty_counter() const noexcept;
+            bool is_dirty() const noexcept;
+            virtual bool is_very_dirty() const;
+            bool is_very_clean() const;
+            Node& clean_up() noexcept;
+            virtual Node& update(const std::vector<std::string>&);
             virtual std::string to_string() const = 0;
             virtual std::string repr() const = 0;
         private:
@@ -38,6 +44,8 @@ namespace hmi_tree_optimization {
             std::unordered_set<Node *> children_;
             std::unordered_set<const Node *> parents_;
             int dirty_counter_;
+            bool dirty_;
+            bool very_dirty__; // TODO remove in the future
         };  // class Node
 
         std::ostream& operator<<(std::ostream&, const Node&);

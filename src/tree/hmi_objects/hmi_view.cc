@@ -11,10 +11,15 @@ namespace hmi_tree_optimization {
             : Node(id) {
         }
 
+        bool HMIView::is_very_dirty() const {
+            return true;  // never cache the root node
+        }
+
         std::string HMIView::to_string() const {
             std::ostringstream res;
 
-            res << "{V|" 
+            res << (is_dirty() ? "*" : "")
+                << "{V|" 
                 << get_id() 
                 << "|ch:" << get_children().size() 
                 << '}';
@@ -24,8 +29,10 @@ namespace hmi_tree_optimization {
         std::string HMIView::repr() const {
             std::ostringstream res;
 
-            res << "HMIView{"
+            res << std::boolalpha
+                << "HMIView{"
                 << "id=" << get_id()
+                << ", d=" << is_dirty()
                 << ", count(children)=" << get_children().size()
                 << "}";
             return res.str();

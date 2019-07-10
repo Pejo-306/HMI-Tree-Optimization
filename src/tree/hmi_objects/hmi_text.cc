@@ -12,10 +12,17 @@ namespace hmi_tree_optimization {
               content_(content) {
         }
 
+        Node& HMIText::update(const std::vector<std::string>& parameters) {
+            // The new string content should be located at parameters[0]
+            content_ = parameters[0];
+            return Node::update(parameters);
+        }
+
         std::string HMIText::to_string() const {
             std::ostringstream res;
 
-            res << "{T|" 
+            res << (is_dirty() ? "*" : "")
+                << "{T|" 
                 << get_id() 
                 << "|'" << content_ 
                 << "'}";
@@ -25,9 +32,11 @@ namespace hmi_tree_optimization {
         std::string HMIText::repr() const {
             std::ostringstream res;
 
-            res << "HMIText{"
+            res << std::boolalpha
+                << "HMIText{"
                 << "id=" << get_id()
                 << ", dc=" << get_dirty_counter()
+                << ", d=" << is_dirty()
                 << ", count(parents)=" << get_parents().size()
                 << ", content='" << content_ << '\''
                 << "}";

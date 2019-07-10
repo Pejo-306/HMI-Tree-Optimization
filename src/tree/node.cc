@@ -7,7 +7,9 @@ namespace hmi_tree_optimization {
     namespace tree {
         Node::Node(nid_t id) noexcept 
             : id_(id),
-              dirty_counter_(0) {
+              dirty_counter_(0),
+              dirty_(false) {
+            very_dirty__ = (rand() % 101 <= 40);
         }
 
         Node::~Node() noexcept {
@@ -103,6 +105,33 @@ namespace hmi_tree_optimization {
         int Node::get_dirty_counter() const noexcept {
             return dirty_counter_;
         }
+
+        bool Node::is_dirty() const noexcept {
+            // ... BLACK MAGIC ...
+            return dirty_;
+        }
+
+        bool Node::is_very_dirty() const {
+            // TODO evaluate rate of change of node based on the dirty_counter_
+            return very_dirty__;
+        }
+
+        bool Node::is_very_clean() const {
+            return !is_very_dirty();
+        }
+
+        Node& Node::clean_up() noexcept {
+            dirty_ = false;
+            return *this;
+        }
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+        Node& Node::update(const std::vector<std::string>& parameters) {
+            dirty_ = true;
+            return *this;
+        }
+#pragma GCC diagnostic pop
 
         std::ostream& operator<<(std::ostream& out, const Node& node) {
             out << node.to_string();

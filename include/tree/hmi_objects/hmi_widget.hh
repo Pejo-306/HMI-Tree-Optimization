@@ -11,6 +11,7 @@ namespace hmi_tree_optimization {
         class HMIWidget final: public Node {
         public:
             explicit HMIWidget(nid_t) noexcept;
+            bool is_very_dirty() const final;
             std::string to_string() const final;
             std::string repr() const final;
         };  // class HMIWidget
