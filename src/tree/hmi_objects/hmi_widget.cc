@@ -49,6 +49,12 @@ namespace hmi_tree_optimization {
                 << "}";
             return res.str();
         }
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+        void HMIWidget::apply_update(const std::vector<std::string>& parameters) {
+        }
+#pragma GCC diagnostic pop
     }  // namespace tree
 }  // namespace hmi_tree_optimization
 

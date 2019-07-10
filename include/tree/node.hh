@@ -36,9 +36,11 @@ namespace hmi_tree_optimization {
             virtual bool is_very_dirty() const;
             bool is_very_clean() const;
             Node& clean_up() noexcept;
-            virtual Node& update(const std::vector<std::string>&);
+            Node& update(const std::vector<std::string>&);
             virtual std::string to_string() const = 0;
             virtual std::string repr() const = 0;
+        protected:
+            virtual void apply_update(const std::vector<std::string>&) = 0;
         private:
             nid_t id_;
             std::unordered_set<Node *> children_;

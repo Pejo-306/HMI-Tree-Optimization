@@ -125,13 +125,14 @@ namespace hmi_tree_optimization {
             return *this;
         }
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
         Node& Node::update(const std::vector<std::string>& parameters) {
-            dirty_ = true;
+            apply_update(parameters);
+            if (!dirty_) {
+                ++dirty_counter_;
+                dirty_ = true;
+            }
             return *this;
         }
-#pragma GCC diagnostic pop
 
         std::ostream& operator<<(std::ostream& out, const Node& node) {
             out << node.to_string();

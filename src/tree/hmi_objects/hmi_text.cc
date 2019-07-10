@@ -12,12 +12,6 @@ namespace hmi_tree_optimization {
               content_(content) {
         }
 
-        Node& HMIText::update(const std::vector<std::string>& parameters) {
-            // The new string content should be located at parameters[0]
-            content_ = parameters[0];
-            return Node::update(parameters);
-        }
-
         std::string HMIText::to_string() const {
             std::ostringstream res;
 
@@ -50,6 +44,11 @@ namespace hmi_tree_optimization {
         HMIText& HMIText::set_content(const std::string& content) noexcept {
             content_ = content;
             return *this;
+        }
+
+        void HMIText::apply_update(const std::vector<std::string>& parameters) {
+            // The new string content should be located at parameters[0]
+            content_ = parameters[0];
         }
     }  // namespace tree
 }  // namespace hmi_tree_optimization
