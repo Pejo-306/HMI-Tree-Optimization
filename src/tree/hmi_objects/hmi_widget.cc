@@ -4,11 +4,17 @@
 #include <sstream>
 
 #include "tree/node.hh"
+#include "tree/cache_entry.hh"
+#include "tree/cache_entries/hmi_widget_cache_entry.hh"
 
 namespace hmi_tree_optimization {
     namespace tree {
         HMIWidget::HMIWidget(nid_t id) noexcept
             : Node(id) {
+        }
+
+        CacheEntry *HMIWidget::cache() {
+            return new HMIWidgetCacheEntry();
         }
 
         std::string HMIWidget::to_string() const {

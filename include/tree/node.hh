@@ -6,6 +6,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "tree/cache_entry.hh"
+
 namespace hmi_tree_optimization {
     namespace tree {
         using nid_t = unsigned int;
@@ -39,6 +41,7 @@ namespace hmi_tree_optimization {
             Node& mark_as_very_clean() noexcept;
             Node& clean_up() noexcept;
             Node& update(const std::vector<std::string>&);
+            virtual CacheEntry *cache() = 0;
             virtual std::string to_string() const = 0;
             virtual std::string repr() const = 0;
         protected:

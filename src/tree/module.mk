@@ -11,7 +11,11 @@ TREE__INCLUDE := \
 	hmi_exception.hh \
 	hmi_objects/hmi_view.hh \
 	hmi_objects/hmi_widget.hh \
-	hmi_objects/hmi_text.hh
+	hmi_objects/hmi_text.hh \
+	cache_entry.hh \
+	cache_entries/hmi_view_cache_entry.hh \
+	cache_entries/hmi_widget_cache_entry.hh \
+	cache_entries/hmi_text_cache_entry.hh
 TREE__INCLUDE := $(patsubst %,$(INCLUDE)/$(TREE__MODULE_NAME)/%,$(TREE__INCLUDE))
 
 # C++ source files of 'tree' module.
@@ -22,7 +26,11 @@ TREE__SRC := \
 	hmi_exception.cc \
 	hmi_objects/hmi_view.cc \
 	hmi_objects/hmi_widget.cc \
-	hmi_objects/hmi_text.cc
+	hmi_objects/hmi_text.cc \
+	cache_entry.cc \
+	cache_entries/hmi_view_cache_entry.cc \
+	cache_entries/hmi_widget_cache_entry.cc \
+	cache_entries/hmi_text_cache_entry.cc
 TREE__SRC := $(patsubst %,$(SRC)/$(TREE__MODULE_NAME)/%,$(TREE__SRC))
 
 # Object files of 'tree' helper module.

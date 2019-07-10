@@ -4,12 +4,18 @@
 #include <sstream>
 
 #include "tree/node.hh"
+#include "tree/cache_entry.hh"
+#include "tree/cache_entries/hmi_text_cache_entry.hh"
 
 namespace hmi_tree_optimization {
     namespace tree {
         HMIText::HMIText(nid_t id, const std::string& content) noexcept
             : Node(id),
               content_(content) {
+        }
+
+        CacheEntry *HMIText::cache() {
+            return new HMITextCacheEntry(content_);
         }
 
         std::string HMIText::to_string() const {

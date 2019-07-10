@@ -4,11 +4,14 @@
 
 #include "tree/hmi_tree.hh"
 #include "tree/node.hh"
+#include "tree/cache_entry.hh"
 
 using namespace hmi_tree_optimization::tree;
 
 namespace hmi_tree_optimization {
     namespace solution {
+        std::unordered_map<tree::nid_t, CacheEntry *> g_cache_table;
+
         void evaluate_tree_dirtiness(tree::HMITree& tree) {
             Node *node;
             std::stack<Node *> nodes;
@@ -32,6 +35,11 @@ namespace hmi_tree_optimization {
 
         void refresh_screen(tree::HMITree& tree) {
 
+        }
+
+        void clear_cache() noexcept {
+            for (auto& entry : g_cache_table)
+                delete entry.second;  // clear the cache
         }
     }  // namespace solution
 }  // namespace hmi_tree_optimization

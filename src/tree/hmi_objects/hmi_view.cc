@@ -4,6 +4,8 @@
 #include <sstream>
 
 #include "tree/node.hh"
+#include "tree/cache_entry.hh"
+#include "tree/cache_entries/hmi_view_cache_entry.hh"
 
 namespace hmi_tree_optimization {
     namespace tree {
@@ -13,6 +15,10 @@ namespace hmi_tree_optimization {
 
         bool HMIView::is_very_dirty() const {
             return true;  // never cache the root node
+        }
+
+        CacheEntry *HMIView::cache() {
+            return new HMIViewCacheEntry();
         }
 
         std::string HMIView::to_string() const {

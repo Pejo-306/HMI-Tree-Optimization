@@ -5,12 +5,14 @@
 #include <string>
 
 #include "tree/node.hh"
+#include "tree/cache_entry.hh"
 
 namespace hmi_tree_optimization {
     namespace tree {
         class HMIWidget final: public Node {
         public:
             explicit HMIWidget(nid_t) noexcept;
+            CacheEntry *cache() final;
             std::string to_string() const final;
             std::string repr() const final;
         private:
