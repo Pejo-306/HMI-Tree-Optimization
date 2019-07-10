@@ -17,15 +17,19 @@ namespace hmi_tree_optimization {
             return *element_;
         }
 
-        Node *HMITree::base_iterator::operator->() const {
+        Node *HMITree::base_iterator::operator->() const noexcept {
             return element_;
         }
 
-        bool HMITree::base_iterator::operator==(const base_iterator& other) const {
+        Node *HMITree::base_iterator::address() const noexcept {
+            return element_;
+        }
+
+        bool HMITree::base_iterator::operator==(const base_iterator& other) const noexcept {
             return element_ == other.element_;
         }
 
-        bool HMITree::base_iterator::operator!=(const base_iterator& other) const {
+        bool HMITree::base_iterator::operator!=(const base_iterator& other) const noexcept {
             return !operator==(other);
         }
 

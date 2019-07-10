@@ -9,8 +9,8 @@ namespace hmi_tree_optimization {
         Node::Node(nid_t id) noexcept 
             : id_(id),
               dirty_counter_(0),
-              dirty_(false) {
-            very_dirty_ = (rand() % 101 <= 40);
+              dirty_(false),
+              very_dirty_(false) {
         }
 
         Node::~Node() noexcept {

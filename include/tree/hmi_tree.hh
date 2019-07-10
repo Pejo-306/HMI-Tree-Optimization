@@ -16,9 +16,10 @@ namespace hmi_tree_optimization {
 
             public:
                 Node& operator*() const;
-                Node *operator->() const;
-                bool operator==(const base_iterator&) const;
-                bool operator!=(const base_iterator&) const;
+                Node *operator->() const noexcept;
+                Node *address() const noexcept;
+                bool operator==(const base_iterator&) const noexcept;
+                bool operator!=(const base_iterator&) const noexcept;
             protected:
                 ~base_iterator() noexcept;
             private:
