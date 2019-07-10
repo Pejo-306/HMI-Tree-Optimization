@@ -1,5 +1,6 @@
 #include "tree/node.hh"
 
+#include <algorithm>
 #include <iostream>
 #include <unordered_set>
 
@@ -9,7 +10,7 @@ namespace hmi_tree_optimization {
             : id_(id),
               dirty_counter_(0),
               dirty_(false) {
-            very_dirty__ = (rand() % 101 <= 40);
+            very_dirty_ = (rand() % 101 <= 40);
         }
 
         Node::~Node() noexcept {
@@ -112,12 +113,26 @@ namespace hmi_tree_optimization {
         }
 
         bool Node::is_very_dirty() const {
-            // TODO evaluate rate of change of node based on the dirty_counter_
-            return very_dirty__;
+            if (std::any_of(children_.begin(), children_.end(), [](Node *child) {
+                        return child->is_very_dirty();
+                        })) {
+                return true;
+            }
+            return very_dirty_;
+        }
+
+        Node& Node::mark_as_very_dirty() noexcept {
+            very_dirty_ = true;
+            return *this;
         }
 
         bool Node::is_very_clean() const {
             return !is_very_dirty();
+        }
+
+        Node& Node::mark_as_very_clean() noexcept {
+            very_dirty_ = false;
+            return *this;
         }
 
         Node& Node::clean_up() noexcept {

@@ -1,9 +1,7 @@
 #include "tree/hmi_objects/hmi_widget.hh"
 
-#include <algorithm>
 #include <string>
 #include <sstream>
-#include <unordered_set>
 
 #include "tree/node.hh"
 
@@ -11,17 +9,6 @@ namespace hmi_tree_optimization {
     namespace tree {
         HMIWidget::HMIWidget(nid_t id) noexcept
             : Node(id) {
-        }
-
-        bool HMIWidget::is_very_dirty() const {
-            const std::unordered_set<Node *>& children = get_children();
-
-            if (std::any_of(children.begin(), children.end(), [](Node *child) {
-                        return child->is_very_dirty();
-                        })) {
-                return true;
-            }
-            return Node::is_very_dirty();
         }
 
         std::string HMIWidget::to_string() const {

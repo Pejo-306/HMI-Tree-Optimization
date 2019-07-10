@@ -34,7 +34,9 @@ namespace hmi_tree_optimization {
             int get_dirty_counter() const noexcept;
             bool is_dirty() const noexcept;
             virtual bool is_very_dirty() const;
+            Node& mark_as_very_dirty() noexcept;
             bool is_very_clean() const;
+            Node& mark_as_very_clean() noexcept;
             Node& clean_up() noexcept;
             Node& update(const std::vector<std::string>&);
             virtual std::string to_string() const = 0;
@@ -47,7 +49,7 @@ namespace hmi_tree_optimization {
             std::unordered_set<const Node *> parents_;
             int dirty_counter_;
             bool dirty_;
-            bool very_dirty__; // TODO remove in the future
+            bool very_dirty_;
         };  // class Node
 
         std::ostream& operator<<(std::ostream&, const Node&);
