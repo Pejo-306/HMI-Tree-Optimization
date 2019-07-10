@@ -189,6 +189,7 @@ namespace hmi_tree_optimization {
         }
         
         std::ostream& operator<<(std::ostream& out, const HMITree& hmi_tree) {
+            // TODO print me (prob with dfs)
             return out;
         }
     }  // namespace tree
