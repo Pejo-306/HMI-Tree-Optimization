@@ -31,6 +31,7 @@ int main() {
     nid_t node_id;
     std::vector<std::string> items;
 
+    std::cin >> g_debug;
     std::cin >> nnodes;
     std::getline(std::cin, line);  // skip newline char
     for (size_t i = 0; i < nnodes; ++i) {
