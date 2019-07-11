@@ -4,6 +4,7 @@
 #include <stack>
 #include <queue>
 
+#include "solution/config.hh"
 #include "tree/hmi_tree.hh"
 #include "tree/node.hh"
 #include "tree/cache_entry.hh"
@@ -62,14 +63,14 @@ namespace hmi_tree_optimization {
                     const std::unordered_set<Node *>& node_children = node->get_children();
 
                     if (g_cache_table.find(node_id) == g_cache_table.end()) {
-                        node->render();
-                        g_cache_table.insert(std::make_pair(node_id, node->cache()));
+                        node->render(g_debug);
+                        g_cache_table.insert(std::make_pair(node_id, node->cache(g_debug)));
                     } else if (std::any_of(node_children.begin(), node_children.end(), cmp)) {
-                        node->render();
+                        node->render(g_debug);
                         delete g_cache_table.at(node_id);
-                        g_cache_table.insert(std::make_pair(node_id, node->cache()));
+                        g_cache_table.insert(std::make_pair(node_id, node->cache(g_debug)));
                     } else {
-                        node->load_from_cache(g_cache_table.at(node_id));
+                        node->load_from_cache(g_cache_table.at(node_id), g_debug);
                     }
 
                     // ignore any children of a cached parent node
@@ -82,7 +83,7 @@ namespace hmi_tree_optimization {
                         delete g_cache_table.at(node_id);
                         g_cache_table.erase(cache_entry_it);
                     }
-                    node->render();
+                    node->render(g_debug);
                 }
             }
         }

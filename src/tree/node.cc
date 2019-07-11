@@ -153,20 +153,23 @@ namespace hmi_tree_optimization {
             return *this;
         }
 
-        Node& Node::render() noexcept {
+        Node& Node::render(bool debug, std::ostream& out) noexcept {
             // Simulate some rendering work
-            std::cout << "Rendering node " << id_ << "..." << std::endl;
+            if (debug)
+                out << "Rendering node " << id_ << "..." << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(render_time));
             return *this;
         }
 
-        CacheEntry *Node::cache() {
-            std::cout << "Caching node " << id_ << "..." << std::endl;
+        CacheEntry *Node::cache(bool debug, std::ostream& out) {
+            if (debug)
+                out << "Caching node " << id_ << "..." << std::endl;
             return generate_cache_entry();
         }
 
-        Node& Node::load_from_cache(const CacheEntry *entry) {
-            std::cout << "Loading node " << id_ << " from cache..." << std::endl;
+        Node& Node::load_from_cache(const CacheEntry *entry, bool debug, std::ostream& out) {
+            if (debug)
+                out << "Loading node " << id_ << " from cache..." << std::endl;
             use_cache_entry(entry);
             return *this;
         }

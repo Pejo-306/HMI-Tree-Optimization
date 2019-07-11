@@ -9,12 +9,14 @@ SOLUTION__EXECUTABLE := solution
 # which each header provides. Source files are recompiled if any one of these 
 # headers is altered.
 SOLUTION__INCLUDE := \
+	config.hh \
 	caching.hh
 SOLUTION__INCLUDE := $(patsubst %,$(INCLUDE)/$(SOLUTION__MODULE_NAME)/%,$(SOLUTION__INCLUDE))
 
 # C++ source files of 'solution' executable module.
 # NOTE: do not include source file with 'main' function definition (see below).
 SOLUTION__SRC := \
+	config.cc \
 	caching.cc
 SOLUTION__SRC := $(patsubst %,$(SRC)/$(SOLUTION__MODULE_NAME)/%,$(SOLUTION__SRC))
 # C++ source file with 'main' function definition.
