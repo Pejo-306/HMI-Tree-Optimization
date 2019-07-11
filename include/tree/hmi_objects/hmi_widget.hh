@@ -14,6 +14,7 @@ namespace hmi_tree_optimization {
             explicit HMIWidget(nid_t) noexcept;
             std::string to_string() const final;
             std::string repr() const final;
+            char to_letter() const noexcept final;
         private:
             void apply_update(const std::vector<std::string>&) final;
             CacheEntry *generate_cache_entry() final;

@@ -13,4 +13,6 @@
 35,T,44,t44
 0,T,13,t13
 refresh
+print
 refresh
+print

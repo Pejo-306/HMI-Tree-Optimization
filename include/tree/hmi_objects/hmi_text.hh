@@ -14,6 +14,7 @@ namespace hmi_tree_optimization {
             explicit HMIText(nid_t, const std::string&) noexcept;
             std::string to_string() const final;
             std::string repr() const final;
+            char to_letter() const noexcept final;
             const std::string& get_content() const noexcept;
             HMIText& set_content(const std::string&) noexcept;
         private:

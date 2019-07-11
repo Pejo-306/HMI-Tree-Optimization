@@ -39,6 +39,10 @@ namespace hmi_tree_optimization {
             return res.str();
         }
 
+        char HMIWidget::to_letter() const noexcept {
+            return 'W';
+        }
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
         void HMIWidget::apply_update(const std::vector<std::string>& parameters) {

@@ -182,6 +182,14 @@ namespace hmi_tree_optimization {
             return count;
         }
 
+        size_t Node::nall_parents() const noexcept {
+            size_t count = parents_.size();
+
+            for (const auto& parent : parents_)
+                count += parent->nall_parents();
+            return count;
+        }
+
         std::ostream& operator<<(std::ostream& out, const Node& node) {
             out << node.to_string();
             return out;

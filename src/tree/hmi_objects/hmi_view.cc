@@ -40,6 +40,10 @@ namespace hmi_tree_optimization {
             return res.str();
         }
 
+        char HMIView::to_letter() const noexcept {
+            return 'V';
+        }
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
         void HMIView::apply_update(const std::vector<std::string>& parameters) {

@@ -39,6 +39,10 @@ namespace hmi_tree_optimization {
             return res.str();
         }
 
+        char HMIText::to_letter() const noexcept {
+            return 'T';
+        }
+
         const std::string& HMIText::get_content() const noexcept {
             return content_;
         }

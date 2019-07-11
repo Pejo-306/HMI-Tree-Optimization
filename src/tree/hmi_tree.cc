@@ -1,6 +1,7 @@
 #include "tree/hmi_tree.hh"
 
 #include <cstdlib>
+#include <iostream>
 #include <limits>
 
 #include "tree/node.hh"
@@ -8,6 +9,22 @@
 
 namespace hmi_tree_optimization {
     namespace tree {
+        namespace {
+            void print_branch(const Node& node, std::ostream& out) noexcept {
+                if (node.get_id() != 0) {
+                    for (size_t p = 0; p < node.nall_parents() - 1; ++p)
+                        out << " │   ";
+                    out << " └──";
+                }
+                out << (node.is_very_dirty() ? "%" : "")
+                    << (node.is_dirty() ? "*" : "") 
+                    << node.to_letter() << "│" << node.get_id() 
+                    << std::endl;
+                for (const auto& child : node.get_children())
+                    print_branch(*child, out);
+            }
+        }  // anonymous namespace
+
         using dfs_iterator = HMITree::dfs_iterator;
         using bfs_iterator = HMITree::bfs_iterator;
 
@@ -142,7 +159,7 @@ namespace hmi_tree_optimization {
             return add_node(parent_node.get_id(), &node);
         }
 
-        Node& HMITree::get_node(nid_t id) noexcept {
+        Node& HMITree::get_node(nid_t id) {
             for (bfs_iterator it = bfs_begin(); it != bfs_end(); ++it) {
                 if (id == (*it).get_id()) {
                     it_container_.clear();
@@ -193,7 +210,7 @@ namespace hmi_tree_optimization {
         }
         
         std::ostream& operator<<(std::ostream& out, const HMITree& hmi_tree) {
-            // TODO print me (prob with dfs)
+            print_branch(hmi_tree.get_root(), out);
             return out;
         }
     }  // namespace tree

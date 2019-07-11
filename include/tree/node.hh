@@ -45,8 +45,10 @@ namespace hmi_tree_optimization {
             CacheEntry *cache(bool = false, std::ostream& = std::cout);
             Node& load_from_cache(const CacheEntry *, bool = false, std::ostream& = std::cout);
             size_t nall_children() const noexcept;
+            size_t nall_parents() const noexcept;
             virtual std::string to_string() const = 0;
             virtual std::string repr() const = 0;
+            virtual char to_letter() const noexcept = 0;
         protected:
             virtual void apply_update(const std::vector<std::string>&) = 0;
             virtual CacheEntry *generate_cache_entry() = 0;

@@ -60,7 +60,7 @@ namespace hmi_tree_optimization {
             HMITree& add_node(nid_t, Node&);
             HMITree& add_node(const Node&, Node *);
             HMITree& add_node(const Node&, Node&);
-            Node& get_node(nid_t) noexcept;
+            Node& get_node(nid_t);
             HMIView& get_root() noexcept;
             const HMIView& get_root() const noexcept;
             nid_t lease_free_nid() noexcept;
