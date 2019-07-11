@@ -10,9 +10,9 @@ namespace hmi_tree_optimization {
         public:
             const std::unordered_map<std::string, void *>& get_attributes() const noexcept;
             virtual ~CacheEntry() noexcept;
+            virtual std::string repr() const = 0;
         protected:
             std::unordered_map<std::string, void *>& get_attributes() noexcept;
-            virtual void must_implement() const noexcept = 0;
         private:
             std::unordered_map<std::string, void *> attributes_;
         };  // class CacheEntry

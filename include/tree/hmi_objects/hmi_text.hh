@@ -12,7 +12,6 @@ namespace hmi_tree_optimization {
         class HMIText final: public Node {
         public:
             explicit HMIText(nid_t, const std::string&) noexcept;
-            CacheEntry *cache() final;
             std::string to_string() const final;
             std::string repr() const final;
             const std::string& get_content() const noexcept;
@@ -20,6 +19,8 @@ namespace hmi_tree_optimization {
         private:
             std::string content_;
             void apply_update(const std::vector<std::string>&) final;
+            CacheEntry *generate_cache_entry() final;
+            void use_cache_entry(const CacheEntry *) final;
         };  // class HMIText
     }  // namespace tree
 }  // namespace hmi_tree_optimization

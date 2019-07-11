@@ -41,12 +41,18 @@ namespace hmi_tree_optimization {
             Node& mark_as_very_clean() noexcept;
             Node& clean_up() noexcept;
             Node& update(const std::vector<std::string>&);
-            virtual CacheEntry *cache() = 0;
+            Node& render() noexcept;
+            CacheEntry *cache();
+            Node& load_from_cache(const CacheEntry *);
+            size_t nall_children() const noexcept;
             virtual std::string to_string() const = 0;
             virtual std::string repr() const = 0;
         protected:
             virtual void apply_update(const std::vector<std::string>&) = 0;
+            virtual CacheEntry *generate_cache_entry() = 0;
+            virtual void use_cache_entry(const CacheEntry *) = 0;
         private:
+            static constexpr long render_time = 50;  // in ms
             nid_t id_;
             std::unordered_set<Node *> children_;
             std::unordered_set<const Node *> parents_;

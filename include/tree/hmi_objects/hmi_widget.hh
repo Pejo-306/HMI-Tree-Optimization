@@ -12,11 +12,12 @@ namespace hmi_tree_optimization {
         class HMIWidget final: public Node {
         public:
             explicit HMIWidget(nid_t) noexcept;
-            CacheEntry *cache() final;
             std::string to_string() const final;
             std::string repr() const final;
         private:
             void apply_update(const std::vector<std::string>&) final;
+            CacheEntry *generate_cache_entry() final;
+            void use_cache_entry(const CacheEntry *) final;
         };  // class HMIWidget
     }  // namespace tree
 }  // namespace hmi_tree_optimization

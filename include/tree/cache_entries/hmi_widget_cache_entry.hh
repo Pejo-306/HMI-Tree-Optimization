@@ -9,8 +9,7 @@ namespace hmi_tree_optimization {
         public:
             explicit HMIWidgetCacheEntry();
             ~HMIWidgetCacheEntry() noexcept;
-        private:
-            void must_implement() const noexcept final;
+            std::string repr() const final;
         };  // class HMIWidgetCacheEntry
     }  // namespace tree
 }  // namespace hmi_tree_optimization

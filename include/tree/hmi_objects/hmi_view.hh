@@ -13,11 +13,12 @@ namespace hmi_tree_optimization {
         public:
             explicit HMIView(nid_t) noexcept;
             bool is_very_dirty() const final;
-            CacheEntry *cache() final;
             std::string to_string() const final;
             std::string repr() const final;
         private:
             void apply_update(const std::vector<std::string>&) final;
+            CacheEntry *generate_cache_entry() final;
+            void use_cache_entry(const CacheEntry *) final;
         };  // class HMIView
     }  // namespace tree
 }  // namespace hmi_tree_optimization

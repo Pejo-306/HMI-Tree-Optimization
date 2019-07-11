@@ -14,10 +14,6 @@ namespace hmi_tree_optimization {
               content_(content) {
         }
 
-        CacheEntry *HMIText::cache() {
-            return new HMITextCacheEntry(content_);
-        }
-
         std::string HMIText::to_string() const {
             std::ostringstream res;
 
@@ -55,6 +51,16 @@ namespace hmi_tree_optimization {
         void HMIText::apply_update(const std::vector<std::string>& parameters) {
             // The new string content should be located at parameters[0]
             content_ = parameters[0];
+        }
+
+        CacheEntry *HMIText::generate_cache_entry() {
+            return new HMITextCacheEntry(content_);
+        }
+
+        void HMIText::use_cache_entry(const CacheEntry *entry) {
+            const std::unordered_map<std::string, void *>& attributes = entry->get_attributes();
+
+            content_ = *static_cast<std::string *>(attributes.at("content_"));
         }
     }  // namespace tree
 }  // namespace hmi_tree_optimization

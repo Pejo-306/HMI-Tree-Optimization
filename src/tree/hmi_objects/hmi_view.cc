@@ -17,10 +17,6 @@ namespace hmi_tree_optimization {
             return true;  // never cache the root node
         }
 
-        CacheEntry *HMIView::cache() {
-            return new HMIViewCacheEntry();
-        }
-
         std::string HMIView::to_string() const {
             std::ostringstream res;
 
@@ -47,6 +43,16 @@ namespace hmi_tree_optimization {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
         void HMIView::apply_update(const std::vector<std::string>& parameters) {
+        }
+#pragma GCC diagnostic pop
+
+        CacheEntry *HMIView::generate_cache_entry() {
+            return new HMIViewCacheEntry();
+        }
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+        void HMIView::use_cache_entry(const CacheEntry *entry) {
         }
 #pragma GCC diagnostic pop
     }  // namespace tree

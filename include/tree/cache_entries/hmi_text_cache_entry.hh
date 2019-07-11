@@ -11,8 +11,7 @@ namespace hmi_tree_optimization {
         public:
             explicit HMITextCacheEntry(const std::string&);
             ~HMITextCacheEntry() noexcept;
-        private:
-            void must_implement() const noexcept final;
+            std::string repr() const final;
         };  // class HMITextCacheEntry
     }  // namespace tree
 }  // namespace hmi_tree_optimization

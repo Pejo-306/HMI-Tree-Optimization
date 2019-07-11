@@ -23,6 +23,7 @@ namespace {
 int main() {
     srand(time(NULL));  // initialize random seed
 
+    int frame = 1;
     HMITree tree;
     size_t nnodes;
     std::string line;
@@ -41,8 +42,21 @@ int main() {
         if (line.compare("print") == 0) {  // print the current state of the tree
             std::cout << tree << std::endl;
         } else if (line.compare("refresh") == 0) {
+            std::cout << ">>>>> Frame " << frame << " <<<<<" << std::endl;
             evaluate_tree_dirtiness(tree);
             refresh_screen(tree);
+            ++frame;
+            std::cout << ">>>>> HMI Tree <<<<<" << std::endl;
+            for (HMITree::bfs_iterator it = tree.bfs_begin(); it != tree.bfs_end(); ++it)
+                std::cout << it->nall_children() << '|'
+                    << it->is_very_dirty() << ' '
+                    << it->repr() << std::endl;
+            std::cout << ">>>>> Cache Table <<<<<" << std::endl;
+            for (auto& entry : g_cache_table)
+                std::cout << "NID: " << entry.first
+                    << " | Entry: " << entry.second->repr() 
+                    << std::endl;
+            std::cout << std::endl;
         } else {
             items = std_helper::split(line, ',');
             node_id = std::stoul(items[0]);
@@ -50,9 +64,7 @@ int main() {
             tree.get_node(node_id).update(items);
         }
     }
-
-    for (HMITree::bfs_iterator it = tree.bfs_begin(); it != tree.bfs_end(); ++it)
-        std::cout << it->is_very_dirty() << it->repr() << std::endl;
+    clear_cache();
     return 0;
 }
 

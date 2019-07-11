@@ -1,6 +1,7 @@
 #include "tree/cache_entries/hmi_text_cache_entry.hh"
 
 #include <string>
+#include <sstream>
 #include <unordered_map>
 
 namespace hmi_tree_optimization {
@@ -14,10 +15,18 @@ namespace hmi_tree_optimization {
         HMITextCacheEntry::~HMITextCacheEntry() noexcept {
             std::unordered_map<std::string, void *>& attributes = get_attributes();
 
-            delete static_cast<std::string *>(attributes["content_"]);
+            delete static_cast<std::string *>(attributes.at("content_"));
         }
 
-        void HMITextCacheEntry::must_implement() const noexcept {
+        std::string HMITextCacheEntry::repr() const {
+            const std::unordered_map<std::string, void *>& attributes = get_attributes();
+            std::ostringstream res;
+            const std::string& content = *static_cast<std::string *>(attributes.at("content_"));
+            
+            res << "HMITextCacheEntry{"
+                << "content=" << content
+                << "}";
+            return res.str();
         }
     }  // namespace tree 
 }  // namespace hmi_tree_optimization

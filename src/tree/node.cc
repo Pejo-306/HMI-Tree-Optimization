@@ -3,9 +3,13 @@
 #include <algorithm>
 #include <iostream>
 #include <unordered_set>
+#include <thread>
+#include <chrono>
 
 namespace hmi_tree_optimization {
     namespace tree {
+        constexpr long Node::render_time;
+
         Node::Node(nid_t id) noexcept 
             : id_(id),
               dirty_counter_(0),
@@ -147,6 +151,32 @@ namespace hmi_tree_optimization {
                 dirty_ = true;
             }
             return *this;
+        }
+
+        Node& Node::render() noexcept {
+            // Simulate some rendering work
+            std::cout << "Rendering node " << id_ << "..." << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(render_time));
+            return *this;
+        }
+
+        CacheEntry *Node::cache() {
+            std::cout << "Caching node " << id_ << "..." << std::endl;
+            return generate_cache_entry();
+        }
+
+        Node& Node::load_from_cache(const CacheEntry *entry) {
+            std::cout << "Loading node " << id_ << " from cache..." << std::endl;
+            use_cache_entry(entry);
+            return *this;
+        }
+
+        size_t Node::nall_children() const noexcept {
+            size_t count = children_.size();
+            
+            for (const auto& child : children_)
+                count += child->nall_children();
+            return count;
         }
 
         std::ostream& operator<<(std::ostream& out, const Node& node) {
