@@ -181,12 +181,16 @@ namespace hmi_tree_optimization {
         }
 
         // NOTE: a random seed should be initialized before invoking this function.
-        nid_t HMITree::lease_free_nid() noexcept {
+        nid_t HMITree::lease_free_nid(nid_t prefered_id) noexcept {
             nid_t res;
 
-            do
-                res = rand() % std::numeric_limits<nid_t>::max() + 1;
-            while (id_pool_.find(res) != id_pool_.end());
+            if (false && id_pool_.find(prefered_id) == id_pool_.end()) {  // can lease prefered_id
+                res = prefered_id;
+            } else {
+                do
+                    res = rand() % std::numeric_limits<nid_t>::max() + 1;
+                while (id_pool_.find(res) != id_pool_.end());
+            }
             id_pool_.insert(res);
             return res;
         }

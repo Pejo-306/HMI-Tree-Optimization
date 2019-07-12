@@ -63,7 +63,7 @@ namespace hmi_tree_optimization {
             Node& get_node(nid_t);
             HMIView& get_root() noexcept;
             const HMIView& get_root() const noexcept;
-            nid_t lease_free_nid() noexcept;
+            nid_t lease_free_nid(nid_t) noexcept;
             dfs_iterator dfs_begin();
             dfs_iterator dfs_end();
             bfs_iterator bfs_begin();
