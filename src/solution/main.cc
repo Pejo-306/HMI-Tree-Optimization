@@ -39,8 +39,8 @@ int main() {
         add_node_from_csv(line, tree);
     }
 
-    while (!std::getline(std::cin, line).eof() &&
-            line.compare("end") != 0) {
+    while (!std::getline(std::cin, line).eof()
+            && line.compare("end") != 0) {
         if (line.compare("print") == 0) {  // print the current state of the tree
             std::cout << tree << std::endl;
         } else if (line.compare("refresh") == 0) {
