@@ -33,7 +33,6 @@ namespace hmi_tree_optimization {
             Node& remove_parent(Node&);
             bool has_parent(const Node *) const noexcept;
             bool has_parent(const Node&) const noexcept;
-            int get_dirty_counter() const noexcept;
             bool is_dirty() const noexcept;
             virtual bool is_very_dirty() const;
             Node& mark_as_very_dirty() noexcept;
@@ -58,7 +57,6 @@ namespace hmi_tree_optimization {
             nid_t id_;
             std::unordered_set<Node *> children_;
             std::unordered_set<const Node *> parents_;
-            int dirty_counter_;
             bool dirty_;
             bool very_dirty_;
         };  // class Node

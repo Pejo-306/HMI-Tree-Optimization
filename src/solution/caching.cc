@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <stack>
 #include <queue>
+#include <unordered_set>
 
 #include "solution/config.hh"
 #include "tree/hmi_tree.hh"
@@ -21,7 +22,8 @@ namespace hmi_tree_optimization {
 
         std::unordered_map<tree::nid_t, CacheEntry *> g_cache_table;
 
-        void evaluate_tree_dirtiness(tree::HMITree& tree) {
+        void evaluate_tree_dirtiness(tree::HMITree& tree, 
+                const std::unordered_set<nid_t>& heavy_hitters) {
             Node *node;
             std::stack<Node *> nodes;
 
@@ -34,8 +36,8 @@ namespace hmi_tree_optimization {
             while (!nodes.empty()) {
                 node = nodes.top();
                 nodes.pop();
-                // TODO evaluate the node here via its dirty counter
-                if (rand() % 101 <= 30)  // FIXME
+                if (heavy_hitters.find(node->get_id()) != heavy_hitters.end())
+                    // node is a heavy hitter - mark as not fit for caching
                     node->mark_as_very_dirty();
                 else
                     node->mark_as_very_clean();

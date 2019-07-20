@@ -12,7 +12,6 @@ namespace hmi_tree_optimization {
 
         Node::Node(nid_t id) noexcept 
             : id_(id),
-              dirty_counter_(0),
               dirty_(false),
               very_dirty_(false) {
         }
@@ -107,10 +106,6 @@ namespace hmi_tree_optimization {
             return has_parent(&parent_node);
         }
 
-        int Node::get_dirty_counter() const noexcept {
-            return dirty_counter_;
-        }
-
         bool Node::is_dirty() const noexcept {
             // ... BLACK MAGIC ...
             return dirty_;
@@ -146,10 +141,7 @@ namespace hmi_tree_optimization {
 
         Node& Node::update(const std::vector<std::string>& parameters) {
             apply_update(parameters);
-            if (!dirty_) {
-                ++dirty_counter_;
-                dirty_ = true;
-            }
+            dirty_ = true;
             return *this;
         }
 

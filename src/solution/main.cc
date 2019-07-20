@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
         } else if (line.compare("refresh") == 0) {
             if (g_debug)
                 std::cout << ">>>>> Frame " << frame << " <<<<<" << std::endl;
-            evaluate_tree_dirtiness(tree);
+            evaluate_tree_dirtiness(tree, heavy_hitters_set);
             refresh_screen(tree);
             ++frame;
             if (g_debug) {

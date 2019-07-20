@@ -1,0 +1,67 @@
+13
+0,W,11
+11,T,21,t21
+0,W,12
+12,T,31,t31
+12,T,32,t32
+12,T,33,t33
+12,T,34,t34
+12,W,35
+35,T,41,t41
+35,T,42,t42
+35,T,43,t43
+35,T,44,t44
+0,T,13,t13
+print
+42,"very dirty"
+refresh
+42,"very dirty"
+33,"t333"
+refresh
+35
+refresh
+42,"very dirty"
+refresh
+42,"very dirty"
+41,"41text"
+refresh
+41,"41text"
+refresh
+42,"very dirty"
+print
+33,"new very dirty"
+refresh
+33,"new very dirty"
+refresh
+33,"new very dirty"
+refresh
+33,"new very dirty"
+refresh
+33,"new very dirty"
+refresh
+33,"new very dirty"
+refresh
+33,"new very dirty"
+refresh
+33,"new very dirty"
+refresh
+33,"new very dirty"
+refresh
+33,"new very dirty"
+refresh
+33,"new very dirty"
+refresh
+33,"new very dirty"
+refresh
+33,"new very dirty"
+print
+end
+
+run:
+```
+./bin/solution {0|1-debug} {k} {errpr} {leeway} < tmp/inputs/input2.txt
+```
+example:
+```
+./bin/solution 1 3 0.01 0.01 < tmp/inputs/input2.txt
+`

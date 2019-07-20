@@ -31,7 +31,6 @@ namespace hmi_tree_optimization {
             res << std::boolalpha
                 << "HMIWidget{"
                 << "id=" << get_id()
-                << ", dc=" << get_dirty_counter()
                 << ", d=" << is_dirty()
                 << ", count(children)=" << get_children().size()
                 << ", count(parents)=" << get_parents().size()

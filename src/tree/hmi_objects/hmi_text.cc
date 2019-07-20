@@ -31,7 +31,6 @@ namespace hmi_tree_optimization {
             res << std::boolalpha
                 << "HMIText{"
                 << "id=" << get_id()
-                << ", dc=" << get_dirty_counter()
                 << ", d=" << is_dirty()
                 << ", count(parents)=" << get_parents().size()
                 << ", content='" << content_ << '\''
