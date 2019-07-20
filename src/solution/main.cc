@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <queue>
+#include <unordered_set>
 
 #include "solution/config.hh"
 #include "solution/caching.hh"
@@ -12,6 +14,7 @@
 #include "tree/hmi_objects/hmi_widget.hh"
 #include "tree/hmi_objects/hmi_text.hh"
 #include "tree/hmi_exception.hh"
+#include "heavy_hitters/cms.hh"
 
 using namespace hmi_tree_optimization;
 using namespace hmi_tree_optimization::solution;
@@ -21,17 +24,30 @@ namespace {
     void add_node_from_csv(const std::string&, HMITree&);
 }  // anonymous namespace
 
-int main() {
+int main(int argc, char *argv[]) {
     srand(time(NULL));  // initialize random seed
+    if (argc < 5) 
+        return -1;
+    g_debug = std::stoi(argv[1]);
 
     int frame = 1;
     HMITree tree;
     size_t nnodes;
     std::string line;
     nid_t node_id;
+    nid_t hitter;
     std::vector<std::string> items;
+    size_t m = 0;  // current size of input stream
+    size_t k = std::stoul(argv[2]);
+    double errpr = std::stod(argv[3]);
+    double leeway = std::stod(argv[4]);  // in %
+    heavy_hitters::CMS<nid_t> cms(k, errpr);
+    auto cmp = [&cms](nid_t left, nid_t right) {
+        return cms.count(left) - cms.count(right);
+    };
+    std::priority_queue<nid_t, std::vector<nid_t>, decltype(cmp)> heavy_hitters_pq(cmp);
+    std::unordered_set<nid_t> heavy_hitters_set;
 
-    std::cin >> g_debug;
     std::cin >> nnodes;
     std::getline(std::cin, line);  // skip newline char
     for (size_t i = 0; i < nnodes; ++i) {
@@ -66,10 +82,44 @@ int main() {
             items = std_helper::split(line, ',');
             node_id = std::stoul(items[0]);
             items.erase(items.begin());
+
+            if (!tree.get_node(node_id).is_dirty()) {
+                hitter = node_id;
+                cms.increment(hitter);
+                ++m;
+                if (cms.count(hitter) >= static_cast<double>(m) / k
+                        && heavy_hitters_set.find(hitter) == heavy_hitters_set.end()) {
+                    heavy_hitters_pq.push(hitter);
+                    heavy_hitters_set.insert(hitter);
+                }
+                while (!heavy_hitters_pq.empty()) {
+                    hitter = heavy_hitters_pq.top();
+                    if (cms.count(hitter) -  leeway * m < static_cast<double>(m) / k) {
+                        heavy_hitters_pq.pop();
+                        heavy_hitters_set.erase(hitter);
+                    } else {
+                        break;
+                    }
+                }
+            }
+
             tree.get_node(node_id).update(items);
         }
     }
+
     clear_cache();
+    if (g_debug) {
+        std::cout << ">>>>> CMS <<<<<" << std::endl;
+        cms.print();
+        std::cout << ">>>>> Heavy hitters <<<<<" << std::endl;
+        while (!heavy_hitters_pq.empty()) {
+            node_id = heavy_hitters_pq.top();
+            std::cout << node_id << ' ';
+            heavy_hitters_pq.pop();
+            heavy_hitters_set.erase(node_id);
+        }
+        std::cout << std::endl;
+    }
     return 0;
 }
 

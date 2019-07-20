@@ -54,7 +54,7 @@ namespace hmi_tree_optimization {
             virtual CacheEntry *generate_cache_entry() = 0;
             virtual void use_cache_entry(const CacheEntry *) = 0;
         private:
-            static constexpr long render_time = 50;  // in ms
+            static constexpr long render_time = 0;  // in ms
             nid_t id_;
             std::unordered_set<Node *> children_;
             std::unordered_set<const Node *> parents_;

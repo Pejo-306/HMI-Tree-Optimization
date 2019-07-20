@@ -1,4 +1,4 @@
-0 13
+13
 0,W,11
 11,T,21,t21
 0,W,12
@@ -12,7 +12,44 @@
 35,T,43,t43
 35,T,44,t44
 0,T,13,t13
-refresh
 print
+12
 refresh
+12
+33,"t333"
+refresh
+35
+refresh
+12
+refresh
+12
+41,"41text"
+refresh
+41,"41text"
+refresh
+12
+21,"text"
+21,"text"
+21,"text"
+21,"text"
+21,"text"
+21,"text"
+21,"text"
+21,"text"
+21,"text"
+21,"text"
+21,"text"
+21,"text"
+21,"text"
 print
+end
+
+run:
+```
+./bin/solution {0|1-debug} {k} {errpr} {leeway} < tmp/inputs/input0.txt
+```
+example:
+```
+./bin/solution 1 3 0.01 0.01 < tmp/inputs/input0.txt
+```
+
