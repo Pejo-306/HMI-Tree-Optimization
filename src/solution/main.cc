@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
                 std::cout << std::endl;
             }
         } else {
-            items = std_helper::split(line, ',');
+            items = std_helper::split(line, ",");
             node_id = std::stoul(items[0]);
             items.erase(items.begin());
 
@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
 namespace {
     void add_node_from_csv(const std::string& line, HMITree& tree) {
         Node *node;
-        std::vector<std::string> items = std_helper::split(line, ',');
+        std::vector<std::string> items = std_helper::split(line, ",");
         nid_t parent_id = std::stoul(items[0]);
         const std::string& type = items[1];
         nid_t node_id = std::stoul(items[2]);
