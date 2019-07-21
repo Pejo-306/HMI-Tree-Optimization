@@ -34,3 +34,6 @@
 # Compiled project binaries
 bin/
 
+# Doxygen generated documentation
+docs/doxygen/
+
