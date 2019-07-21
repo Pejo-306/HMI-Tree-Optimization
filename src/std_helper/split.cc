@@ -1,9 +1,9 @@
-/**
- * @file src/std_helper/split.cc
- * @brief Implement function to split a string by a given delimiter
+/*!
+ * \file src/std_helper/split.cc
+ * \brief Implement function to split a string by a given delimiter
  *
- * @author Petar Nikolov
- * @version v1.0.0
+ * \author Petar Nikolov
+ * \version v1.0.0
  */
 
 #include "std_helper/split.hh"
@@ -11,12 +11,11 @@
 #include <string>
 #include <vector>
 
-/// @namespace hmi_tree_optimization
-/// @brief Project namespace
+//! \namespace hmi_tree_optimization
+//! \brief Project namespace
 namespace hmi_tree_optimization {
-
-    /// @namespace std_helper
-    /// @brief Contains functionality which extends the C++ standard library
+    //! \namespace std_helper
+    //! \brief Contains functionality which extends the C++ standard library
     namespace std_helper {
         // Split a string by a delimiter
         std::vector<std::string> split(const std::string& s, const std::string& delim) {
