@@ -59,7 +59,9 @@ namespace hmi_tree_optimization {
          */
         template<typename T>
         class CMS final {
+
         public:
+
             /*!
              * \brief Constructor for count-min sketch
              *
@@ -136,6 +138,7 @@ namespace hmi_tree_optimization {
             }
 
         private:
+
             const size_t k_;  /*!< Maximum amount of heavy hitters. */
             const double errpr_;  /*!< Target counting error probability. */
             const double epsilon_;  /*!< Additive factor. */
