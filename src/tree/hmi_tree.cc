@@ -56,7 +56,7 @@ namespace hmi_tree_optimization {
          * \see HMIException
          * \see Node
          */
-        Node& HMITree::base_iterator::operator*() const {
+        Node& dfs_iterator::operator*() const {
             if (element_ == nullptr)
                 throw HMIException(element_);
             return *element_;
@@ -65,45 +65,31 @@ namespace hmi_tree_optimization {
         /*!
          * \brief Get pointer to iterator element
          */
-        Node *HMITree::base_iterator::operator->() const noexcept {
+        Node *dfs_iterator::operator->() const noexcept {
             return element_;
         }
 
         /*!
          * \brief Get address of iterator element
          */
-        Node *HMITree::base_iterator::address() const noexcept {
+        Node *dfs_iterator::address() const noexcept {
             return element_;
         }
 
         /*!
          * \brief Compare equality of two iterators
          */
-        bool HMITree::base_iterator::operator==(const base_iterator& other) const noexcept {
+        bool dfs_iterator::operator==(const dfs_iterator& other) const noexcept {
             return element_ == other.element_;
         }
 
         /*!
          * \brief Compare inequality of two iterators
          *
-         * \see HMITree::base_iterator::operator==
+         * \see dfs_iterator::operator==
          */
-        bool HMITree::base_iterator::operator!=(const base_iterator& other) const noexcept {
+        bool dfs_iterator::operator!=(const dfs_iterator& other) const noexcept {
             return !operator==(other);
-        }
-
-        /*!
-         * \brief Destroy tree iterator
-         */
-        HMITree::base_iterator::~base_iterator() noexcept {
-        }
-
-        /*!
-         * \brief Construct tree iterator
-         */
-        HMITree::base_iterator::base_iterator(HMITree& owner, Node *element) noexcept
-            : owner_(owner),
-              element_(element) {
         }
 
         /*!
@@ -139,7 +125,8 @@ namespace hmi_tree_optimization {
          */
         dfs_iterator::dfs_iterator(HMITree& owner, Node *element, 
                 bool shove_children) noexcept
-            : base_iterator(owner, element) {
+            : owner_(owner),
+              element_(element) {
             if (shove_children)
                 shove_children_to_stack();
         }
@@ -170,6 +157,50 @@ namespace hmi_tree_optimization {
                 owner_.it_container_.pop_back();
             }
             return res;
+        }
+
+        /*!
+         * \brief Access iterator element
+         *
+         * If the pointed-to element is null, an HMIException is thrown.
+         *
+         * \see HMIException
+         * \see Node
+         */
+        Node& bfs_iterator::operator*() const {
+            if (element_ == nullptr)
+                throw HMIException(element_);
+            return *element_;
+        }
+
+        /*!
+         * \brief Get pointer to iterator element
+         */
+        Node *bfs_iterator::operator->() const noexcept {
+            return element_;
+        }
+
+        /*!
+         * \brief Get address of iterator element
+         */
+        Node *bfs_iterator::address() const noexcept {
+            return element_;
+        }
+
+        /*!
+         * \brief Compare equality of two iterators
+         */
+        bool bfs_iterator::operator==(const bfs_iterator& other) const noexcept {
+            return element_ == other.element_;
+        }
+
+        /*!
+         * \brief Compare inequality of two iterators
+         *
+         * \see bfs_iterator::operator==
+         */
+        bool bfs_iterator::operator!=(const bfs_iterator& other) const noexcept {
+            return !operator==(other);
         }
 
         /*!
@@ -205,7 +236,8 @@ namespace hmi_tree_optimization {
          */
         bfs_iterator::bfs_iterator(HMITree& owner, Node *element, 
                 bool shove_children) noexcept
-            : base_iterator(owner, element) {
+            : owner_(owner),
+              element_(element) {
             if (shove_children)
                 shove_children_to_queue();
         }

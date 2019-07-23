@@ -52,19 +52,16 @@ namespace hmi_tree_optimization {
          */
         class HMITree final {
 
+        public:
+
             /*!
-             * \class HMITree::base_iterator
+             * \class HMITree::dfs_iterator
              *
-             * \brief Abstract tree iterator class
-             *
-             * This class is internal and is to be subclassed internally
-             * by the tree's publicly available iterators.
+             * \brief Iterates over the tree by utilizing DFS.
              *
              * \see HMITree
-             * \see HMITree::dfs_iterator
-             * \see HMITree::bfs_iterator
              */
-            class base_iterator {
+            class dfs_iterator {
                 friend class HMITree;
 
             public:
@@ -97,7 +94,7 @@ namespace hmi_tree_optimization {
                  *
                  * \return True if iterators are equal. False otherwise.
                  */
-                bool operator==(const base_iterator& other) const noexcept;
+                bool operator==(const dfs_iterator& other) const noexcept;
 
                 /*!
                  * \brief Compare inequality of two iterators
@@ -106,55 +103,7 @@ namespace hmi_tree_optimization {
                  *
                  * \return True if iterators are not equal. False otherwise.
                  */
-                bool operator!=(const base_iterator& other) const noexcept;
-
-            protected:
-
-                /*!
-                 * \brief Destroy tree iterator
-                 *
-                 * \note This destructor is marked protected in order to make the class abstract.
-                 */
-                ~base_iterator() noexcept;
-
-            private:
-
-                HMITree& owner_;  /*!< Owner tree which is iterated over. */
-                Node *element_;  /*!< Pointer to current element. */
-
-                /*!
-                 * \brief Construct tree iterator
-                 *
-                 * \details This constructor is to be used internally by the <!--
-                 * --> HMITree's implementation.
-                 *
-                 * \see Node
-                 * \see HMITree
-                 *
-                 * \param owner HMITree instance which owns this iterator.
-                 * \param element Pointer to current element.
-                 */
-                base_iterator(HMITree& owner, Node *element) noexcept;
-            };  // class HMITree::base_iterator
-
-        public:
-
-            /*!
-             * \class HMITree::dfs_iterator
-             *
-             * \brief Iterates over the tree by utilizing DFS.
-             *
-             * This iterator subclasses and fully implements the
-             * HMITree::base_iterator internal private class.
-             *
-             * \see HMITree
-             * \see HMITree::base_iterator
-             */
-            class dfs_iterator: public base_iterator {
-                friend class base_iterator;
-                friend class HMITree;
-
-            public:
+                bool operator!=(const dfs_iterator& other) const noexcept;
 
                 /*!
                  * \brief Increment the iterator (preincrement)
@@ -176,6 +125,9 @@ namespace hmi_tree_optimization {
 
             private:
 
+                HMITree& owner_;  /*!< Owner tree which is iterated over. */
+                Node *element_;  /*!< Pointer to current element. */
+
                 /*!
                  * \brief Construct DFS tree iterator
                  *
@@ -184,7 +136,6 @@ namespace hmi_tree_optimization {
                  *
                  * \see Node
                  * \see HMITree
-                 * \see HMITree::base_iterator
                  *
                  * \param owner HMITree instance which owns this iterator.
                  * \param element Pointer to current element.
@@ -216,21 +167,55 @@ namespace hmi_tree_optimization {
             };  // class HMITree::dfs_iterator
 
             /*!
-             * \class HMITree::dfs_iterator
+             * \class HMITree::bfs_iterator
              *
              * \brief Iterates over the tree by utilizing BFS.
              *
-             * This iterator subclasses and fully implements the
-             * HMITree::base_iterator internal private class.
-             *
              * \see HMITree
-             * \see HMITree::base_iterator
              */
-            class bfs_iterator: public base_iterator {
-                friend class base_iterator;
+            class bfs_iterator {
                 friend class HMITree;
 
             public:
+
+                /*!
+                 * \brief Access iterator element
+                 *
+                 * \return Reference to iterator tree node.
+                 */
+                Node& operator*() const;
+
+                /*!
+                 * \brief Get pointer to iterator element
+                 *
+                 * \return Pointer to iterator tree node.
+                 */
+                Node *operator->() const noexcept;
+
+                /*!
+                 * \brief Get address of iterator element
+                 * 
+                 * \return Pointer to iterator tree node.
+                 */
+                Node *address() const noexcept;
+
+                /*!
+                 * \brief Compare equality of two iterators
+                 *
+                 * Two iterators are equal if they point to the same tree node.
+                 *
+                 * \return True if iterators are equal. False otherwise.
+                 */
+                bool operator==(const bfs_iterator& other) const noexcept;
+
+                /*!
+                 * \brief Compare inequality of two iterators
+                 *
+                 * Two iterators are not equal if they point to different tree nodes.
+                 *
+                 * \return True if iterators are not equal. False otherwise.
+                 */
+                bool operator!=(const bfs_iterator& other) const noexcept;
 
                 /*!
                  * \brief Increment the iterator (preincrement)
@@ -252,6 +237,9 @@ namespace hmi_tree_optimization {
 
             private:
 
+                HMITree& owner_;  /*!< Owner tree which is iterated over. */
+                Node *element_;  /*!< Pointer to current element. */
+
                 /*!
                  * \brief Construct BFS tree iterator
                  *
@@ -260,7 +248,6 @@ namespace hmi_tree_optimization {
                  *
                  * \see Node
                  * \see HMITree
-                 * \see HMITree::base_iterator
                  *
                  * \param owner HMITree instance which owns this iterator.
                  * \param element Pointer to current element.
