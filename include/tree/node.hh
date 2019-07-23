@@ -468,6 +468,9 @@ namespace hmi_tree_optimization {
          * \brief Print a node to an output stream
          *
          * \param out Output stream where node is printed.
+         * \param node Node instance to be printed.
+         *
+         * \return Modified output stream.
          */
         std::ostream& operator<<(std::ostream& out, const Node& node);
     }  // namespace tree
