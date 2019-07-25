@@ -2,9 +2,6 @@
  * \file src/solution/caching.cc
  * \brief Implementation of tree dirtiness evaluation and caching routines.
  *
- * FIXME: these routines are implemented in a very stupid way, using tree
- * iterators. Fix it pls.
- *
  * \see include/solution/caching.hh
  *
  * \author Petar Nikolov
@@ -41,7 +38,7 @@ namespace hmi_tree_optimization {
              *
              * \see evaluate_tree_dirtiness()
              */
-            void _evaluate_node_dirtiness(tree::Node& node,
+            void _evaluate_node_dirtiness(Node& node,
                     const std::unordered_set<nid_t>& heavy_hitters) {
                 for (auto child_node : node.get_children())
                     _evaluate_node_dirtiness(*child_node, heavy_hitters);
@@ -55,7 +52,7 @@ namespace hmi_tree_optimization {
             }
         }  // anonymous namespace
 
-        std::unordered_map<tree::nid_t, CacheEntry *> g_cache_table;
+        std::unordered_map<nid_t, CacheEntry *> g_cache_table;
 
         /*!
          * \brief Evaluate the dirtiness of each tree node.
@@ -74,7 +71,7 @@ namespace hmi_tree_optimization {
          * All nodes are cleaned up (have their dirty state reset) for the
          * duration of the next frame in this step.
          */
-        void evaluate_tree_dirtiness(tree::HMITree& tree, 
+        void evaluate_tree_dirtiness(HMITree& tree, 
                 const std::unordered_set<nid_t>& heavy_hitters) {
             _evaluate_node_dirtiness(tree.get_root(), heavy_hitters);
         }
@@ -82,12 +79,10 @@ namespace hmi_tree_optimization {
         /*!
          * \brief Refresh the screen.
          *
-         * The refreshing process traverses the tree using DFS. By utilizing 
-         * this traversal algorithm a parent node's children will immediately be 
-         * positioned after their shared parent node within a queue data 
-         * structure. This way, the  appropriate amount of children nodes may 
-         * be ignored and popped from the queue when deciding which parent node
-         * to cache.
+         * The refreshing process traverses the tree using BFS which naturally
+         * must go through a parent node before reaching any of that parent's
+         * children nodes. This way the optimization algorithm will always
+         * prefer the highest possible nodes in the tree's hierarchy to cache.
          *
          * If a node is marked as very clean, one of two scenarios occur:
          * - should the node be updated, it is firstly rendered again, cached
@@ -100,15 +95,20 @@ namespace hmi_tree_optimization {
          * examined further.
          * Otherwise, if a node is marked as very dirty, its cache entry is
          * deleted (if there is one) and it is rendered.
+         *
+         * After the traversal process is complete, this routine cleans the
+         * cache table of unnecessary cache table entries (i.e. whose 
+         * corresponding nodes have a higher parent cached).
          */
-        void refresh_screen(tree::HMITree& tree) {
+        void refresh_screen(HMITree& tree) {
             Node *node;
             std::queue<Node *> nodes;
             nid_t node_id;
+            std::unordered_set<nid_t> cached_ids;
+            std::unordered_set<nid_t> erased_entries;
 
-            for (HMITree::dfs_iterator it = tree.dfs_begin(); it != tree.dfs_end(); ++it)
-                nodes.push(it.address());
-
+            // start from the root node
+            nodes.push(&tree.get_root());
             while (!nodes.empty()) {
                 node = nodes.front();
                 nodes.pop();
@@ -130,18 +130,7 @@ namespace hmi_tree_optimization {
                         // table, and the node's state is restored
                         node->load_from_cache(g_cache_table.at(node_id), g_debug);
                     }
-
-                    // ignore any children of a cached parent node
-                    for (size_t i = 0; i < node->nall_children(); ++i) {
-                        auto cache_entry_it = g_cache_table.find(nodes.front()->get_id());
-
-                        if (cache_entry_it != g_cache_table.end()) {
-                            // delete unnecessary cache entry
-                            delete g_cache_table.at(nodes.front()->get_id());
-                            g_cache_table.erase(cache_entry_it);
-                        }
-                        nodes.pop();
-                    }
+                    cached_ids.insert(node_id);
                 } else {  // if (node->is_very_dirty())
                     auto cache_entry_it = g_cache_table.find(node_id);
 
@@ -151,8 +140,27 @@ namespace hmi_tree_optimization {
                         g_cache_table.erase(cache_entry_it);
                     }
                     node->render(g_debug);
+
+                    // add a very dirty node's children for processing
+                    for (auto child_node : node->get_children())
+                        nodes.push(child_node);
                 }
             }
+
+            // garbage collection:
+            // erase unnecessary cache table entries
+            for (auto& entry : g_cache_table) {
+                auto cache_entry_it = cached_ids.find(entry.first);
+
+                if (cache_entry_it == cached_ids.end()) {
+                    delete entry.second;
+                    erased_entries.insert(entry.first);
+                }
+            }
+            for (auto erased_entry_id : erased_entries)
+                g_cache_table.erase(erased_entry_id);
+            // cached_ids.clear();
+            // erased_entries.clear();
         }
 
         /*!
