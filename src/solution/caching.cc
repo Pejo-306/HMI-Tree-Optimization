@@ -35,6 +35,24 @@ namespace hmi_tree_optimization {
             auto cmp = [](Node *child) {
                 return child->is_dirty();
             };
+
+            /*!
+             * \brief Evaluate the dirtiness of a given tree node.
+             *
+             * \see evaluate_tree_dirtiness()
+             */
+            void _evaluate_node_dirtiness(tree::Node& node,
+                    const std::unordered_set<nid_t>& heavy_hitters) {
+                for (auto child_node : node.get_children())
+                    _evaluate_node_dirtiness(*child_node, heavy_hitters);
+
+                if (heavy_hitters.find(node.get_id()) != heavy_hitters.end())
+                    // node is a heavy hitter - mark as not fit for caching
+                    node.mark_as_very_dirty();
+                else
+                    node.mark_as_very_clean();
+                node.clean_up();
+            }
         }  // anonymous namespace
 
         std::unordered_map<tree::nid_t, CacheEntry *> g_cache_table;
@@ -42,31 +60,23 @@ namespace hmi_tree_optimization {
         /*!
          * \brief Evaluate the dirtiness of each tree node.
          *
+         * This procedure traverses through the entire tree by utilizing DFS.
+         * A depth-first search is preferred here because it naturally reaches
+         * a parent node's children nodes before operating on said parent node.
+         * Therefore, each parent node will have its children evaluated and
+         * marked as either very dirty or very clean before evaluating the
+         * parent.
+         *
          * Essentially a node is marked as very dirty only if it is considered
          * a heavy hitter (i.e. a frequently updated element). All other nodes
          * are marked as very clean.
+         *
+         * All nodes are cleaned up (have their dirty state reset) for the
+         * duration of the next frame in this step.
          */
         void evaluate_tree_dirtiness(tree::HMITree& tree, 
                 const std::unordered_set<nid_t>& heavy_hitters) {
-            Node *node;
-            std::stack<Node *> nodes;
-
-            // Reverse the order of the tree:
-            // popping from the stack will begin at the tree's leaves and
-            // end at the tree's root.
-            for (HMITree::bfs_iterator it = tree.bfs_begin(); it != tree.bfs_end(); ++it)
-                nodes.push(it.address());
-
-            while (!nodes.empty()) {
-                node = nodes.top();
-                nodes.pop();
-                if (heavy_hitters.find(node->get_id()) != heavy_hitters.end())
-                    // node is a heavy hitter - mark as not fit for caching
-                    node->mark_as_very_dirty();
-                else
-                    node->mark_as_very_clean();
-                node->clean_up();
-            }
+            _evaluate_node_dirtiness(tree.get_root(), heavy_hitters);
         }
 
         /*!

@@ -40,8 +40,8 @@ namespace hmi_tree_optimization {
          * After the evaluation process has been complete, the program must
          * decide which nodes to actually cache.
          *
-         * \see tree::HMITree
-         * \see refresh_screen
+         * \see hmi_tree_optimization::tree::HMITree
+         * \see refresh_screen()
          *
          * \param tree HMI tree to evaluate.
          * \param heavy_hitters Set of frequently updated nodes.
@@ -59,8 +59,8 @@ namespace hmi_tree_optimization {
          * if any of their cached nodes become dirty. All other nodes are
          * rendered as usual.
          *
-         * \see tree::HMITree
-         * \see evaluate_tree_dirtiness
+         * \see hmi_tree_optimization::tree::HMITree
+         * \see evaluate_tree_dirtiness()
          *
          * \param tree HMI tree to rerender.
          */
