@@ -13,47 +13,47 @@
 35,T,44,t44
 0,T,13,t13
 print
-42,"very dirty"
+42,very dirty
 refresh
-42,"very dirty"
-33,"t333"
+42,very dirty
+33,t333
 refresh
 35
 refresh
-42,"very dirty"
+42,very dirty
 refresh
-42,"very dirty"
-41,"41text"
+42,very dirty
+41,41text
 refresh
-41,"41text"
+41,41text
 refresh
-42,"very dirty"
+42,very dirty
 print
-33,"new very dirty"
+33,new very dirty
 refresh
-33,"new very dirty"
+33,new very dirty
 refresh
-33,"new very dirty"
+33,new very dirty
 refresh
-33,"new very dirty"
+33,new very dirty
 refresh
-33,"new very dirty"
+33,new very dirty
 refresh
-33,"new very dirty"
+33,new very dirty
 refresh
-33,"new very dirty"
+33,new very dirty
 refresh
-33,"new very dirty"
+33,new very dirty
 refresh
-33,"new very dirty"
+33,new very dirty
 refresh
-33,"new very dirty"
+33,new very dirty
 refresh
-33,"new very dirty"
+33,new very dirty
 refresh
-33,"new very dirty"
+33,new very dirty
 refresh
-33,"new very dirty"
+33,new very dirty
 print
 end
 
