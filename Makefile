@@ -51,7 +51,7 @@ ALL_TEST_TARGETS :=
 
 # Compiler options.
 CXX := g++
-CXXFLAGS := -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic --std=c++14 -I $(INCLUDE)
+CXXFLAGS := -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic --std=c++11 -I $(INCLUDE)
 
 # The project's helper modules.
 # They should be essential for every executable module.
