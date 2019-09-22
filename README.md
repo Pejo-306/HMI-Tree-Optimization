@@ -18,7 +18,11 @@ environment, written entirely in pure C++.
     * [The Approximate Heavy Hitters problem](#the-approximate-heavy-hitters-problem)
 * [Implementaion details](#implementation-details)
   - [Project structure - brief rundown](#project-structure-brief-rundown)
+  - [Unit tests](#unit-tests)
+  - [C++ version](#c++-version)
+  - [Simulation](#simulation)
 * [Documentation](#documentation)
+* [Running the project](#running-the-project)
 * [License](#license)
 
 ## Preface
@@ -287,3 +291,131 @@ than _(1 + leeway) * m / k_ times. This ensures that one newly marked heavy
 hitter will continue to be considered as such for a number of consequtive frames
 even if it isn't updated.
 
+## Implementation details
+
+This section of the README document is meant for people who are interested in
+exploring the project's code. It does not elaborate additionally on the
+execution and reasoning behind the optimization algorithm.
+
+### Project structure - brief rundown
+
+The following output (partially modified) is produced by running the command
+Linux command _'tree'_ in the project's root directory:
+
+```
+.<project root directory>
+├── bin
+│   ├── solution
+│   └── test
+│       └── ...<output ommitted>
+├── docs
+│   └── doxygen
+│       └── ...<output ommitted>
+├── Doxyfile
+├── include
+│   ├── catch2
+│   │   └── catch.hpp
+│   ├── heavy_hitters
+│   │   └── ...<output ommitted>
+│   ├── lib
+│   ├── solution
+│   │   └── ...<output ommitted>
+│   ├── std_helper
+│   │   └── ...<output ommitted>
+│   ├── __test
+│   │   └── ...<output ommitted>
+│   └── tree
+│       └── ...<output ommitted>
+├── lib
+├── LICENSE
+├── Makefile
+├── README.md
+├── src
+│   ├── heavy_hitters
+│   │   ├── ...<output ommitted>
+│   │   └── module.mk
+│   ├── solution
+│   │   ├── ...<output ommitted>
+│   │   ├── main.cc
+│   │   ├── module.mk
+│   │   └── target.mk
+│   ├── std_helper
+│   │   ├── module.mk
+│   │   └── ...<output ommitted>
+│   ├── __test
+│   │   └── ...<output ommitted>
+│   └── tree
+│       ├── module.mk
+│       └── ...<output ommitted>
+├── test
+│   └── ...<output ommitted>
+└── tmp
+    ├── inputs
+    │   ├── input0.txt
+    │   ├── input1.txt
+    │   └── input2.txt
+    └── obj
+        └── ...<output ommitted>
+```
+
+The entire project is managed via the Make utility. The project's root contains
+the main _'Makefile'_ which may be used to build the project (see 
+[Running the project](#running-the-project)). The project also contains some
+other important files such as _'LICENSE'_, _'README.md'_ and _'Doxyfile'_.
+
+The C++ project is split into so called _'modules'_. They are meant to separate
+the project's code into smaller, more manageable and logically-linked pieces. 
+Instructions to compile each module are found within the various smaller
+make files (with extension '.mk'). Each module has its own source code files,
+header files, as well as unit tests and are namespaced appropriately within the
+C++ code.
+This project has the following modules:
+- _'heavy hitters'_: defines the CMS structure;
+- _'std _ helper'_: functionality to more easily interface with some parts of
+C++'s standard library;
+- _'tree'_: defines a simulated stripped-down tree data structure to represent
+the real HMI graphical environment;
+- _'solution'_: this module holds the program's 'main' function and produces
+an executable to run;
+- _' _ _ test'_: ignore this module (see [Unit tests](#unit-tests)).
+As mentioned above the _'solution'_ module utilizes all other modules to
+compile the entire program and produce an executable, named after the same
+module, for use.
+
+The project's file structure is summarized in the following list:
+- __'bin/'__: project's produced executables;
+- __'src/'__: project's C++ source code (separated in modules);
+- __'include/'__: project's C++ header files (separated in modules);
+- __'lib/'__: third party C++ libraries/code should be stored here; since this
+project does not use any such code this folder should be ignored;
+- __'test/'__: project's unit tests (separated in modules); ignore this folder
+(see [Unit tests](#unit-tests));
+- __'docs/'__: files, related to project documentation (see [Documentation](#documentation));
+- __'tmp/'__: various temporary files;
+  - __'tmp/obj/'__: compiled object files from the project's source code;
+  - __'tmp/inputs/'__: exemplary user input (see [Running the project](#running-the-project));
+  
+### Unit tests
+
+The project's structure has facilities to write unit tests with the 
+[Catch2](https://github.com/catchorg/Catch2) C++ testing framework. However,
+no unit tests have been written for this project and all files and folders
+related to unit testing should be ignored.
+
+### C++ version
+
+This project is written in modern C++, i.e. the code must be compiled with
+the C++11 standard or above.
+
+### Simulation
+
+This project is only a Proof on Concept build - this is neither the final 
+solution to the presented optimization problem, nor is the algorithm actually
+run on the real HMI data structure. In a way, the project can be viewed on 
+as a simulation. The HMI data structure is represented by a stripped-down
+tree with an arbitrary amount of nodes. The latter only have unique ids and
+various flags, indicating the dirtiness of said node, as well as some arbitrary
+insignificant information (for leaf nodes). All graphical processes such as
+rendering, drawing, caching, retrieving from the cache, etc. are purely 
+demonstrative (e.g. the rendering process is simulated via a deliberate time 
+delay).
