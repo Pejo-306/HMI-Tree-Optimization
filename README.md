@@ -9,15 +9,13 @@ environment, written entirely in pure C++.
 * [Problem description and solution](#problem-description-and-solution)
   - [The HMI tree structure](#the-hmi-tree-structure)
   - [Brief summary of the problem](#brief-summary-of-the-problem)
-  - [Brief summary of the solution](#brief-summary-of-the-solution)
+  - [Solution](#solution)
+    * [The cache table](#the-cache-table)
+    * [Frequency counting](#frequency-counting)
+    * [Tree traversal](#tree-traversal)
   - [Evaluating dirtiness](#evaluating-dirtiness)
     * [The count-min sketch (CMS) data structure](#the-count-min-sketch-cms-data-structure)
-    * [The Heavy Hitters problem](#the-heavy-hitters-problem)
-  - [Caching procedure](#caching-procedure)
-    * [The cache table](#the-cache-table)
-    * [Selection of caching candidates](#selection-of-caching-candidates)
-    * [Refreshing the screen - preloading or rerendering](#refreshing-the-screen-preloading-or-rerendering)
-    * [Cleaning up the cache](#cleaning-up-the-cache)
+    * [The Approximate Heavy Hitters problem](#the-approximate-heavy-hitters-problem)
 * [Implementaion details](#implementation-details)
   - [Project structure - brief rundown](#project-structure-brief-rundown)
 * [Documentation](#documentation)
@@ -153,6 +151,139 @@ tree are directly pasted (redrawn) on the screen. This way, a lot of the
 rendering work is made obsolete and the performance of the system increases
 substantially.
 
-### Brief summary of the solution
+### Solution
 
+The optimization algorithm presented has 2 aspects to its operation.
+
+#### The cache table
+
+The ultimate goal of the optimization algorithm can be considered the management
+of a _cache table_ - a mapping between a node's unique identifier and a
+pointer/reference to the same node's cache entry in memory.
+
+#### Frequency counting
+
+The algorithm constantly keeps count of how many times a node has been made
+__dirty__ during the lifetime of the system. It does __not__ keep count of how
+many times a node has been updated - as long as it has altered its state at
+least once, the node is considered __dirty__. The update frequency of all nodes
+is kept within a count-min sketch data structure (which is discussed later in
+[The count-min sketch (CMS) data structure](#the-count-min-sketch-cms-data-structure)).
+
+For the purposes of this solution, some additional terminology is used:
+- a _very dirty_ node is one which the algorithm has decided that it is updated
+very frequently; therefore it is not considered suitable for caching and is
+rerendered on every screen refresh; a container node is also automatically
+considered _very dirty_ if any of its _direct_ or _indirect_ children is
+also _very dirty_;
+- a _very clean_ node is one which is updated rather seldom in comparison to
+other nodes; it is essentially the opposite of a _very dirty_ node and is thus
+considered suitable for caching.
+
+Every time the screen refreshes the solution has to decide which nodes should
+be marked as _very dirty_ and the others - as _very clean_. To achieve this,
+the _Heavy Hitters_ algorithm (that is discussed later in the section 
+[The Approximate Heavy Hitters problem](#the-approximate-heavy-hitters-problem))
+is utilized to mark a number of nodes as _very dirty_ whereas all others are 
+marked as _very clean_.
+
+#### Tree traversal
+
+As explained in the last section, the optimization algorithm has the capability
+to consider which nodes are suitable for caching. On every screen refresh the
+tree structure is traversed twice - once with a _DFS_ (depth-first search) and
+the second time with a _BFS_ (breadth-first search).
+
+The first traversal of the tree uses _DFS_ to clear the __dirty__ flag (if the
+node has been updated since the last refresh), as well as mark each node as
+either _very dirty_ or _very clean_. The marking decision is made on the
+basis of frequency counting as elaborated on in the above subsection. The
+traversal method used here must be a _DFS_ in order to properly mark container
+nodes based on the marking of their children nodes. Therefore, this _DFS_ _must_
+traverse the entire tree data structure.
+
+The second tree traversal utilizes a _BFS_ to actually decide which nodes to cache,
+which - to rerender, and which - to load from the cache. The benefit of using
+a _BFS_ traversal here is that the latter naturally reaches the uppermost (closest
+to the root) _very clean_ nodes first. It is thus obsolete to traverse a
+_very clean_ node's children, as the whole container's branch must be _very clean_
+for the widget itself to be _very clean_. The entire branch may then be cached.
+This is why the _BFS_ algorithm traverses the entire tree only in the worst-case
+scenario - when all the nodes are non-cacheable. In practice, the _BFS_ algorithm
+will always partially execute to achieve the goals of the solution.
+
+### Evaluating dirtiness
+
+This section goes into more detail on the frequency counting facilities of the
+optimization algorithm.
+
+As already discussed the solution utilizes the _Approximate Heavy Hitters_ 
+algorithm to determine the non-cacheable nodes. An excellent paper on this
+topic can be found [here](http://timroughgarden.org/s17/l/l2.pdf).
+
+#### The count-min sketch (CMS) data structure
+
+This particular data structure is used by the _Approximate Heavy Hitters_
+algorithm. The data structure is comprised of _b_ buckets and _l_ hash
+functions and supports two operations - _Inc(x)_ and _Count(x)_. The structure
+itself is a 2D array of _b_ x _l_ counters, initially set to _0_. The _Inc(x)_
+operation increments the counters, located at every one of the _l_ hash functions'
+results. Since a hash function has a finite amount of values for its result
+(i.e. an index to one of the buckets) collisions between counted elements will
+occur. However, since counters are never decremented, any one counter can only
+overestimate the frequency occurence of any one item. Therefore, the _Count(x)_
+operation just returns the smallest value of any the _l_ counters, pointed to
+by the computed values of the hash functions for the element _x_. This method
+of counting occurence obviously produces errors but is independent of the number
+of elements which are tracked and therefore takes up a substantially smaller
+amount of memory.
+
+The linked paper more thoroughly elaborates on the CMS. The most important
+takeaway points are left here as a list:
+- _k_ - user defined paramter; the maximum allowed amount of heavy hitters;
+- _δ_ - the allowable error probability; set by the user;
+- _ε_ - user defined parameter; read the paper for more details; value is _1 / 2k_;
+- _b_ - number of buckets; equal to _e / ε_;
+- _l_ - number of hash functions; equal to _ceil(ln(1/δ))_;
+In this project each has function is generated via the following formula:
+```
+h = ((ax + b) mod p) mod b
+
+where:
+  a - random non-negative integer;
+  b - random positive integer;
+  p - random prime number
+  b - number of buckets
+```
+These are only used in order to deliver a PoC solution. Other families of hash
+functions may be more suitable for the purposes of the optimization algorithm,
+however, they are not explored in this document.
+
+#### The _Approximate Heavy Hitters_ problem
+
+As previously mentioned, the _Approximate Heavy Hitters_ algorithm uses a
+CMS to count the update frequency of all nodes. Since the optimization algorithm
+runs in real-time, without knowing in advance the number of times each node will
+be updated for the lifetime of the system, this algorithm has to run everytime
+the screen refreshes and needs to keep track of the amount of times nodes have
+collectively been marked __dirty__ - a variable denoted by _m_. Therefore, all
+heavy hitters are considered nodes which have been __dirty__ at least _m / k_
+times since the system started and are marked consequently as _very dirty_.
+
+If implemented as stated above, however, a possible problem occurs. Remember
+that a node's update frequency is actually the number of times it has been marked
+__dirty__. Thus, its frequency counters (in the CMS) can only be increased by
+1 between 2 frame refreshes. If its update frequency (theoretically assuming 
+it is 100% accurate) reaches the required value of _m / k_ in a given frame and
+the node has not been immediately updated in the next frame, whilst any other
+node has been (i.e. the value of _m_ has increased), then the same node's update
+frequency will fall below the required _m / k_ value to be considered a heavy 
+hitter. This would result in unsatisfactory results where some nodes repeatedly
+change states between being _very dirty_ and _very clean_. To adapt this 
+algorithm to this project's problem, an additional user-defined parameter is 
+required - the _leeway_ (in the range 0-1). In order for a heavy hitter to be 
+'cleaned' and marked _very clean_ again, it must have been made __dirty__ less 
+than _(1 + leeway) * m / k_ times. This ensures that one newly marked heavy
+hitter will continue to be considered as such for a number of consequtive frames
+even if it isn't updated.
 
