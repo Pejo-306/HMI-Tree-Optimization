@@ -17,12 +17,15 @@ environment, written entirely in pure C++.
     * [The count-min sketch (CMS) data structure](#the-count-min-sketch-cms-data-structure)
     * [The Approximate Heavy Hitters problem](#the-approximate-heavy-hitters-problem)
 * [Implementaion details](#implementation-details)
-  - [Project structure - brief rundown](#project-structure-brief-rundown)
+  - [Project structure - brief rundown](#project-structure---brief-rundown)
   - [Unit tests](#unit-tests)
-  - [C++ version](#c++-version)
+  - [C++ version](#c-version)
   - [Simulation](#simulation)
 * [Documentation](#documentation)
-* [Running the project](#running-the-project)
+* [Build and run](#build-and-run)
+  - [Building the project](#building-the-project)
+  - [Running](#running)
+  - [User input](#user-input)
 * [License](#license)
 
 ## Preface
@@ -194,19 +197,19 @@ marked as _very clean_.
 #### Tree traversal
 
 As explained in the last section, the optimization algorithm has the capability
-to consider which nodes are suitable for caching. On every screen refresh the
+to consider which nodes are suitable for caching. On every screen refresh, the
 tree structure is traversed twice - once with a _DFS_ (depth-first search) and
 the second time with a _BFS_ (breadth-first search).
 
 The first traversal of the tree uses _DFS_ to clear the __dirty__ flag (if the
 node has been updated since the last refresh), as well as mark each node as
-either _very dirty_ or _very clean_. The marking decision is made on the
-basis of frequency counting as elaborated on in the above subsection. The
-traversal method used here must be a _DFS_ in order to properly mark container
-nodes based on the marking of their children nodes. Therefore, this _DFS_ _must_
-traverse the entire tree data structure.
+either _very dirty_ or _very clean_. The marking decision is made based on 
+frequency counting as elaborated on in the above subsection. The traversal 
+method used here must be a _DFS_ to properly mark container nodes based on the 
+marking of their children nodes. Therefore, this _DFS_ _must_ traverse the 
+entire tree data structure.
 
-The second tree traversal utilizes a _BFS_ to actually decide which nodes to cache,
+The second tree traversal utilizes a _BFS_ to decide which nodes to cache,
 which - to rerender, and which - to load from the cache. The benefit of using
 a _BFS_ traversal here is that the latter naturally reaches the uppermost (closest
 to the root) _very clean_ nodes first. It is thus obsolete to traverse a
@@ -235,21 +238,21 @@ operation increments the counters, located at every one of the _l_ hash function
 results. Since a hash function has a finite amount of values for its result
 (i.e. an index to one of the buckets) collisions between counted elements will
 occur. However, since counters are never decremented, any one counter can only
-overestimate the frequency occurence of any one item. Therefore, the _Count(x)_
+overestimate the frequency occurrence of any one item. Therefore, the _Count(x)_
 operation just returns the smallest value of any the _l_ counters, pointed to
 by the computed values of the hash functions for the element _x_. This method
-of counting occurence obviously produces errors but is independent of the number
+of counting occurrence obviously produces errors but is independent of the number
 of elements which are tracked and therefore takes up a substantially smaller
 amount of memory.
 
 The linked paper more thoroughly elaborates on the CMS. The most important
 takeaway points are left here as a list:
-- _k_ - user defined paramter; the maximum allowed amount of heavy hitters;
+- _k_ - user-defined parameter; the maximum allowed amount of heavy hitters;
 - _δ_ - the allowable error probability; set by the user;
-- _ε_ - user defined parameter; read the paper for more details; value is _1 / 2k_;
+- _ε_ - user-defined parameter; read the paper for more details; value is _1 / 2k_;
 - _b_ - number of buckets; equal to _e / ε_;
 - _l_ - number of hash functions; equal to _ceil(ln(1/δ))_;
-In this project each has function is generated via the following formula:
+In this project each hash function is generated via the following formula:
 ```
 h = ((ax + b) mod p) mod b
 
@@ -259,7 +262,7 @@ where:
   p - random prime number
   b - number of buckets
 ```
-These are only used in order to deliver a PoC solution. Other families of hash
+These are only used to deliver a PoC solution. Other families of hash
 functions may be more suitable for the purposes of the optimization algorithm,
 however, they are not explored in this document.
 
@@ -268,8 +271,8 @@ however, they are not explored in this document.
 As previously mentioned, the _Approximate Heavy Hitters_ algorithm uses a
 CMS to count the update frequency of all nodes. Since the optimization algorithm
 runs in real-time, without knowing in advance the number of times each node will
-be updated for the lifetime of the system, this algorithm has to run everytime
-the screen refreshes and needs to keep track of the amount of times nodes have
+be updated for the lifetime of the system, this algorithm has to run every time
+the screen refreshes and needs to keep track of the number of times nodes have
 collectively been marked __dirty__ - a variable denoted by _m_. Therefore, all
 heavy hitters are considered nodes which have been __dirty__ at least _m / k_
 times since the system started and are marked consequently as _very dirty_.
@@ -288,7 +291,7 @@ algorithm to this project's problem, an additional user-defined parameter is
 required - the _leeway_ (in the range 0-1). In order for a heavy hitter to be 
 'cleaned' and marked _very clean_ again, it must have been made __dirty__ less 
 than _(1 + leeway) * m / k_ times. This ensures that one newly marked heavy
-hitter will continue to be considered as such for a number of consequtive frames
+hitter will continue to be considered as such for several consecutive frames
 even if it isn't updated.
 
 ## Implementation details
@@ -305,65 +308,65 @@ Linux command _'tree'_ in the project's root directory:
 ```
 .<project root directory>
 ├── bin
-│   ├── solution
-│   └── test
-│       └── ...<output ommitted>
+│   ├── solution
+│   └── test
+│       └── ...<output ommitted>
 ├── docs
-│   └── doxygen
-│       └── ...<output ommitted>
+│   └── doxygen
+│       └── ...<output ommitted>
 ├── Doxyfile
 ├── include
-│   ├── catch2
-│   │   └── catch.hpp
-│   ├── heavy_hitters
-│   │   └── ...<output ommitted>
-│   ├── lib
-│   ├── solution
-│   │   └── ...<output ommitted>
-│   ├── std_helper
-│   │   └── ...<output ommitted>
-│   ├── __test
-│   │   └── ...<output ommitted>
-│   └── tree
-│       └── ...<output ommitted>
+│   ├── catch2
+│   │   └── catch.hpp
+│   ├── heavy_hitters
+│   │   └── ...<output ommitted>
+│   ├── lib
+│   ├── solution
+│   │   └── ...<output ommitted>
+│   ├── std_helper
+│   │   └── ...<output ommitted>
+│   ├── __test
+│   │   └── ...<output ommitted>
+│   └── tree
+│       └── ...<output ommitted>
 ├── lib
 ├── LICENSE
 ├── Makefile
 ├── README.md
 ├── src
-│   ├── heavy_hitters
-│   │   ├── ...<output ommitted>
-│   │   └── module.mk
-│   ├── solution
-│   │   ├── ...<output ommitted>
-│   │   ├── main.cc
-│   │   ├── module.mk
-│   │   └── target.mk
-│   ├── std_helper
-│   │   ├── module.mk
-│   │   └── ...<output ommitted>
-│   ├── __test
-│   │   └── ...<output ommitted>
-│   └── tree
-│       ├── module.mk
-│       └── ...<output ommitted>
+│   ├── heavy_hitters
+│   │   ├── ...<output ommitted>
+│   │   └── module.mk
+│   ├── solution
+│   │   ├── ...<output ommitted>
+│   │   ├── main.cc
+│   │   ├── module.mk
+│   │   └── target.mk
+│   ├── std_helper
+│   │   ├── module.mk
+│   │   └── ...<output ommitted>
+│   ├── __test
+│   │   └── ...<output ommitted>
+│   └── tree
+│       ├── module.mk
+│       └── ...<output ommitted>
 ├── test
-│   └── ...<output ommitted>
+│   └── ...<output ommitted>
 └── tmp
     ├── inputs
-    │   ├── input0.txt
-    │   ├── input1.txt
-    │   └── input2.txt
+    │   ├── input0.txt
+    │   ├── input1.txt
+    │   └── input2.txt
     └── obj
         └── ...<output ommitted>
 ```
 
 The entire project is managed via the Make utility. The project's root contains
 the main _'Makefile'_ which may be used to build the project (see 
-[Running the project](#running-the-project)). The project also contains some
-other important files such as _'LICENSE'_, _'README.md'_ and _'Doxyfile'_.
+[Build and run](#build-and-run)). The project also contains some
+other important files such as _'LICENSE'_, _'README\.md'_ and _'Doxyfile'_.
 
-The C++ project is split into so called _'modules'_. They are meant to separate
+The C++ project is split into so-called _'modules'_. They are meant to separate
 the project's code into smaller, more manageable and logically-linked pieces. 
 Instructions to compile each module are found within the various smaller
 make files (with extension '.mk'). Each module has its own source code files,
@@ -371,13 +374,13 @@ header files, as well as unit tests and are namespaced appropriately within the
 C++ code.
 This project has the following modules:
 - _'heavy hitters'_: defines the CMS structure;
-- _'std _ helper'_: functionality to more easily interface with some parts of
+- _'std\_helper'_: functionality to more easily interface with some parts of
 C++'s standard library;
 - _'tree'_: defines a simulated stripped-down tree data structure to represent
 the real HMI graphical environment;
 - _'solution'_: this module holds the program's 'main' function and produces
 an executable to run;
-- _' _ _ test'_: ignore this module (see [Unit tests](#unit-tests)).
+- _'\_\_test'_: ignore this module (see [Unit tests](#unit-tests)).
 As mentioned above the _'solution'_ module utilizes all other modules to
 compile the entire program and produce an executable, named after the same
 module, for use.
@@ -393,7 +396,7 @@ project does not use any such code this folder should be ignored;
 - __'docs/'__: files, related to project documentation (see [Documentation](#documentation));
 - __'tmp/'__: various temporary files;
   - __'tmp/obj/'__: compiled object files from the project's source code;
-  - __'tmp/inputs/'__: exemplary user input (see [Running the project](#running-the-project));
+  - __'tmp/inputs/'__: exemplary user input (see [Build and run](#build-and-run));
   
 ### Unit tests
 
@@ -405,12 +408,12 @@ related to unit testing should be ignored.
 ### C++ version
 
 This project is written in modern C++, i.e. the code must be compiled with
-the C++11 standard or above.
+the __C++11__ standard or above.
 
 ### Simulation
 
-This project is only a Proof on Concept build - this is neither the final 
-solution to the presented optimization problem, nor is the algorithm actually
+This project is only a Proof of Concept build - this is neither the final 
+solution to the presented optimization problem nor is the algorithm 
 run on the real HMI data structure. In a way, the project can be viewed on 
 as a simulation. The HMI data structure is represented by a stripped-down
 tree with an arbitrary amount of nodes. The latter only have unique ids and
@@ -419,3 +422,168 @@ insignificant information (for leaf nodes). All graphical processes such as
 rendering, drawing, caching, retrieving from the cache, etc. are purely 
 demonstrative (e.g. the rendering process is simulated via a deliberate time 
 delay).
+
+## Documentation
+
+This project's C++ source code is documented with [Doxygen](http://www.doxygen.nl/).
+Most of the files are fully documented.
+
+To generate the Doxygen documentation (from the project's root directory):
+
+```bash
+$ doxygen
+```
+
+Then, open the _'index.html'_ file within the __'docs/doxygen/html/'__ folder
+(with Firefox, for example):
+
+```bash
+$ firefox docs/doxygen/html/index.html
+```
+
+## Build and run
+
+This section has instructions on building and running the project with
+exemplary user input.
+
+### Building the project
+
+First of all, clone the GitHub project:
+
+```bash
+$ git clone https://github.com/Pejo-306/HMI-Tree-Optimization.git
+$ cd HMI-Tree-Optimization/
+```
+
+The Make utility is used to compile the source code and build the project.
+You can fully build it like so:
+
+```bash
+$ make
+```
+
+After that, an executable named _'solution'_ will be generated in the __'bin/'__
+directory which can be run (see below).
+
+In case you wish to delete all project binaries and compiled object files, the
+following command could be used:
+
+```bash
+$ make clean
+```
+
+### Running
+
+After the project has been built, it can be executed from the command line with
+a number of compulsory user-defined paramters:
+
+```bash
+$ ./bin/solution {0|1-debug} {k} {δ} {leeway}
+
+where
+  debug - set to 1 to display additional debugging information;
+  k - maximum number of heavy hitters;
+  δ - the allowed error probability (in the range 0-1);
+  leeway - in the range 0-1.
+```
+
+This project comes with a few exemplary user input files, located in the 
+__'tmp/inputs/'__ folder. Then, the program can be executed like so:
+
+```bash
+$ ./bin/solution 1 3 0.01 0.01 < tmp/inputs/input1.txt
+```
+
+### User input
+
+The program accepts input from STDIN to build a simulation tree and perform
+various operations on it. The reader is advised to take a look at any one of
+the provided exemplary user input files.
+
+
+#### Building a tree
+
+First, the program reads an integral value _n_. The latter determines the number
+of tree nodes (excluding the readily available root node) that the
+tree has. Afterward, the next _n_ lines of input define each tree node, one
+line per node. Each line is in CSV format:
+
+```
+{parent id},{type},{id},[arg1,arg2...]
+
+where
+  parent_id - this node's parent's id; integer;
+  type - node type as a single letter; currently the only available types 
+         are: 'W' - widget, 'T' - text;
+  id - this node's unique id; integer;
+  [arg1,arg2...] - additional arguments, required for node construction;
+                   depends on the node's type.
+```
+
+For example, to create a text node which is directly connected to the _root_,
+has an id of _'33'_ and retains the text _'Hello World'_:
+
+```
+<input ommitted>
+0,T,33,Hello World
+<input ommitted>
+```
+
+#### Operations
+
+There are several operations implemented which are meant to simulate the real
+HMI graphical environment with only the features that are of most import to
+the optimization algorithm. The commands are inputted one per line and the
+available ones are:
+- _print_: displays the current state of the simulated tree. Each node is
+displayed by its type (represented as a single character) and its unique id.
+There are also two other symbols which may appear next to the node's type letter:
+_'*'_ if the node is __dirty__; _'%'_ if the node is _very dirty_. Some exemplary
+output from the _print_ command is provided below:
+
+```
+%V│0
+ └──T│13
+ └──W│11
+ │    └──T│21
+ └──%W│12
+ │    └──%W│35
+ │    │    └──T│44
+ │    │    └──T│43
+ │    │    └──T│41
+ │    │    └──%*T│42
+ │    └──T│34
+ │    └──T│33
+ │    └──T│31
+ │    └──T│32
+```
+
+- _refresh_: simulates a screen refresh. As previously discussed, the optimization
+algorithm runs when the screen is refreshed.
+- update: this command issues and update to a node. The command itself is in
+the following CSV format:
+
+```
+{id},[arg1,arg2...]
+
+where
+  id - unique id of updated node; integer;
+  [arg1,arg2...] - additional arguments, required to update the node; depends
+                   on node's type.
+```
+
+For example, to update the text node with id _'33'_ by replacing its text content
+with _'dirty'_:
+
+```
+<input ommitted>
+33,dirty
+<input ommitted>
+```
+
+- _end_: exits the program.
+
+## License
+
+This project is distributed under the [MIT license](LICENSE)
+
